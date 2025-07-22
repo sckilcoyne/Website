@@ -5,17 +5,22 @@ import mapboxgl from 'mapbox-gl'
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './App.css'
 
-// import InfoSimple from './InfoSimple'
-// import InfoDetail from './InfoDetail'
 import Legend from './Legend';
 import SideBar, {ModeToggle} from './components/selection/SideBar'
 // import {ModeToggle} from './components/selection/SideBar'
+
+import { 
+  layerIntersections, 
+  layerLTS,
+  layerBikeParking,
+  layerBlueBikes,
+} from './components/MapLayers/MapLayers';
 
 // https://docs.mapbox.com/help/tutorials/use-mapbox-gl-js-with-react/
 
 const INITIAL_CENTER = [-71.0809, 42.3473]
 const INITIAL_ZOOM = 12
-const MAX_ZOOM = 18
+const MAX_ZOOM = 20
 const MIN_ZOOM = 12
 const ZOOM_UNION = 12
 const BOUNDS = [
@@ -27,17 +32,78 @@ const LINE_WIDTH = 4
 const COLOR_SCALE = ['#007191', '#62c8d3', '#f47a00', '#d31f11', 'grey'] // https://www.simplifiedsciencepublishing.com/resources/best-color-palettes-for-scientific-figures-and-data-visualizations
 // rgb(0, 113, 145), rgb(98, 200, 211), rgb(244, 122, 0), rgb(211, 31, 17)
 
-
 function Map() {
   // stores the feature that the user is currently viewing (triggers the modal)
   const [activeFeature, setActiveFeature] = useState()
-  const [advancedMode, setAdvancedMode] = useState(false);
-  console.log('advancedMode:', advancedMode);
+  const [activeFeatureType, setActiveFeatureType] = useState()
 
-  // for toggling between map view and card view on small screens
-  // From https://github.com/mapbox/public-tools-and-demos/blob/main/projects/demo-realestate/src/App.jsx
-  // still need to figure out how this works
-  const [activeMobileView, setActiveMobileView] = useState('map')
+  const [advancedMode, setAdvancedMode] = useState(false);
+  // console.log('advancedMode:', advancedMode);
+  
+  const [displayLTSState, setLTS] = useState(true);
+  const [displayIntersectionsState, setIntersections] = useState(false);
+  const [displayBikeParkingState, setBikeParking] = useState(false);
+  const [displayBluebikeStationsState, setBluebikeStations] = useState(false);
+  
+  const displayLTSRef = useRef()
+  const displayIntersectionsRef = useRef()
+  const displayBikeParkingRef = useRef()
+  const displayBluebikeStationsRef = useRef()
+
+  displayLTSRef.current = displayLTSState
+  displayIntersectionsRef.current = displayIntersectionsState
+  displayBikeParkingRef.current = displayBikeParkingState
+  displayBluebikeStationsRef.current = displayBluebikeStationsState
+  console.log('Map() |',
+    'displayLTSRef.current', displayLTSRef.current,
+    'displayIntersectionsRef.current', displayIntersectionsRef.current,
+    'displayBikeParkingRef.current', displayBikeParkingRef.current,
+    'displayBluebikeStationsRef.current', displayBluebikeStationsRef.current,
+  )
+
+  const [displayLTS1State, setLTS1] = useState(true);
+  const [displayLTS2State, setLTS2] = useState(true);
+  const [displayLTS3State, setLTS3] = useState(true);
+  const [displayLTS4State, setLTS4] = useState(true);
+
+  const displayLTS1Ref = useRef()
+  const displayLTS2Ref = useRef()
+  const displayLTS3Ref = useRef()
+  const displayLTS4Ref = useRef()
+
+  displayLTS1Ref.current = displayLTS1State
+  displayLTS2Ref.current = displayLTS2State
+  displayLTS3Ref.current = displayLTS3State
+  displayLTS4Ref.current = displayLTS4State
+
+  var ltsLayerName = 'lts-layer'
+  var intersectionsLayerName = 'intersections-layer'
+  var bikeParkingLayerName = 'bike_parking-layer'
+  var bluebikeLayerName = 'bluebike-layer'
+
+  const loadLayers = (ltsLayerName, bikeParkingLayerName, bluebikeLayerName, intersectionsLayerName,
+                      ) => {
+    console.log('loadLayers State', 
+      displayLTSState, displayIntersectionsState, displayBikeParkingState, displayBluebikeStationsState,)
+    console.log('loadLayers Ref',
+      displayLTSRef.current, displayIntersectionsRef.current, displayBikeParkingRef.current, displayBluebikeStationsRef.current)
+    if (displayLTSRef.current) {
+      layerLTS(mapRef, ltsLayerName, COLOR_SCALE, LINE_WIDTH, setActiveFeature, setActiveFeatureType)
+      if (!displayLTS1Ref.current) { setLTSfilter(1) }
+      if (!displayLTS2Ref.current) { setLTSfilter(2) }
+      if (!displayLTS3Ref.current) { setLTSfilter(3) }
+      if (!displayLTS4Ref.current) { setLTSfilter(4) }
+    }
+    if (displayBikeParkingRef.current) {
+      layerBikeParking(mapRef, bikeParkingLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+    }
+    if (displayBluebikeStationsRef.current) {
+      layerBlueBikes(mapRef, bluebikeLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+    }
+    if (displayIntersectionsRef.current) {
+      layerIntersections(mapRef, intersectionsLayerName, displayIntersectionsRef, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+    }
+  };
 
   const mapRef = useRef()
   const mapContainerRef = useRef()
@@ -45,29 +111,41 @@ function Map() {
   const [center, setCenter] = useState(INITIAL_CENTER)
   const [zoom, setZoom] = useState(INITIAL_ZOOM)
 
-  // // on click, set the active feature
-  // const handleFeatureClick = (feature) => {
-  //   setActiveFeature(feature)
-  // }
-
-  // // when the modal is closed, clear the active feature
-  // const handleModalClose = () => {
-  //   setActiveFeature(undefined)
-  // }
-
   const handleAdvancedMode = () => {
     console.log('advancedMode switched from', advancedMode);
     setAdvancedMode(advancedMode => !advancedMode);
   }
   
-
-  // toggle the map and card view on mobile devices
-  const handleActiveMobileClick = () => {
-    if (activeMobileView === 'map') {
-      setActiveMobileView('cards')
+  const handleLTS1 = () => {
+    console.log('displayLTS1 switched from', displayLTS1Ref.current);
+    setLTS1(displayLTS1 => !displayLTS1);
+    setLTSfilter(1)
+  }
+  const handleLTS2 = () => {
+    console.log('displayLTS2 switched from', displayLTS2Ref.current);
+    setLTS2(displayLTS2 => !displayLTS2);
+    setLTSfilter(2)
+  }
+  const handleLTS3 = () => {
+    console.log('displayLTS3 switched from', displayLTS3Ref.current);
+    setLTS3(displayLTS3 => !displayLTS3);
+    setLTSfilter(3)
+  }
+  const handleLTS4 = () => {
+    console.log('displayLTS4 switched from', displayLTS4Ref.current);
+    setLTS4(displayLTS4 => !displayLTS4);
+    setLTSfilter(4)
+  }
+  const setLTSfilter = (level) => {
+    let ltsFilter = mapRef.current.getFilter(ltsLayerName)
+    // console.log('ltsFilter', ltsFilter)
+    if (ltsFilter.includes(level)) {
+      const index = ltsFilter.indexOf(level);
+      ltsFilter.splice(index, 1); // 2nd parameter means remove one item only
     } else {
-      setActiveMobileView('map')
+      ltsFilter.push(level)
     }
+    mapRef.current.setFilter(ltsLayerName, ltsFilter);
   }
 
   // Load Mapbox map with:
@@ -99,78 +177,11 @@ function Map() {
       }
     });
 
+    let q = 1
 
     mapRef.current.on('load', function () {
-      mapRef.current.addSource('LTS_source', {
-          type: 'vector',
-          url: 'mapbox://skilcoyne.stressmap_tiles'
-      })
-
-      // Add LTS data layer
-      mapRef.current.addLayer({
-          'id': 'lts-layer',
-          "type": "line",
-          'source': 'LTS_source',
-          'source-layer': 'lts', // replaces 'road-label-simple' which seems to work for light-v11 but not standard style
-          'slot': 'middle',
-          'paint': {
-              'line-color': [
-                  'match',
-                  ['get', 'LTS'],
-                  1, COLOR_SCALE[0],
-                  2, COLOR_SCALE[1],
-                  3, COLOR_SCALE[2],
-                  4, COLOR_SCALE[3],
-                  // "1.0", COLOR_SCALE[0],
-                  // "2.0", COLOR_SCALE[1],
-                  // "3.0", COLOR_SCALE[2],
-                  // "4.0", COLOR_SCALE[3],
-                  COLOR_SCALE[4]
-              ],
-              'line-width': LINE_WIDTH,
-              // 'line-dasharray': [ // this just doesn't render very good looking
-              //     'match',
-              //     ['get', 'LTS'],
-              //     1, ["literal", [1, 0]],
-              //     2, ["literal", [2, 2]],
-              //     3, ["literal", [1, 3]],
-              //     4, ["literal", [1, 5]],
-              //     ["literal", [1, 1]]
-              // ],
-          }
-      },
-      // 'road-label-simple' // Add layer below labels
-      )
-
-      // Add selected LTS segment layer
-      mapRef.current.addLayer(
-        {
-          'id': 'selected-lts',
-          "type": "line",
-          'source': 'LTS_source',
-          'source-layer': 'lts',
-          'slot': 'middle',
-          'paint': {
-              'line-color': [
-                  'match',
-                  ['get', 'LTS'],
-                  1, COLOR_SCALE[0],
-                  2, COLOR_SCALE[1],
-                  3, COLOR_SCALE[2],
-                  4, COLOR_SCALE[3],
-                  // "1.0", COLOR_SCALE[0],
-                  // "2.0", COLOR_SCALE[1],
-                  // "3.0", COLOR_SCALE[2],
-                  // "4.0", COLOR_SCALE[3],
-                  COLOR_SCALE[4]
-              ],
-              'line-width': LINE_WIDTH * 3
-            },
-          filter: ['in', 'osmid', '']
-        },
-        // 'road-label-simple'
-      );
-
+      loadLayers(ltsLayerName, bikeParkingLayerName, bluebikeLayerName, intersectionsLayerName,)
+      
       // get the current center coordinates and zoom level from the map
       mapRef.current.on('move', () => {
         const mapCenter = mapRef.current.getCenter()
@@ -181,49 +192,55 @@ function Map() {
         setZoom(mapZoom)
       })
 
-      // When a click event occurs on a feature in the places layer, open a popup at the
-      // location of the feature, with description HTML from its properties.
-      mapRef.current.on('click', 'lts-layer', (e) => {
-        console.log('App/map/click/e.features[0]', e.features[0])
-        console.log('App/map/click/e.features[0].geometry.coordinates', e.features[0].geometry.coordinates)
-
-        setActiveFeature(e.features[0])
-        // console.log('App/map/click/e.features[0].id', e.features[0].id)
-        mapRef.current.setFilter('selected-lts', ['in', 'osmid', e.features[0].id]);
-
-        // Copy coordinates array.
-        const coordinates = e.features[0].geometry.coordinates.slice(); // I don't think this works with line strings
-        // let description = renderToStaticMarkup(<InfoSimple selectedFeature={activeFeature}/>)
-        
-        // Ensure that if the map is zoomed out such that multiple
-        // copies of the feature are visible, the popup appears
-        // over the copy being pointed to.
-        if (['mercator', 'equirectangular'].includes(mapRef.current.getProjection().name)) {
-            while (Math.abs(e.lngLat.lng - coordinates[0]) > 180) {
-                coordinates[0] += e.lngLat.lng > coordinates[0] ? 360 : -360;
-            }
-        }
-
-        // new mapboxgl.Popup()
-        //     .setLngLat(e.lngLat) // Changed to use click location instead of feature location (I think)
-        //     .setHTML(description)
-        //     .setMaxWidth("600px")
-        //     .addTo(mapRef.current);
-      });
-
-      // Change the cursor to a pointer when the mouse is over the LTS layer.
-      mapRef.current.on('mouseenter', 'lts-layer', () => {
-        mapRef.current.getCanvas().style.cursor = 'pointer'
-      })
-
-      // Change it back to a pointer when it leaves.
-      mapRef.current.on('mouseleave', 'lts-layer', () => {
-        mapRef.current.getCanvas().style.cursor = '';
-      })
-
       // Add fullscreen button
       mapRef.current.addControl(new mapboxgl.FullscreenControl());
     })
+
+    mapRef.current.on('zoom', (e) => {
+      let zoomThreshold = 16
+      let styleStandard = 'mapbox://styles/mapbox/standard'
+      let styleStandardConfig = {
+              basemap: {
+                lightPreset: 'day',
+                showPlaceLabels: false,
+                showPointOfInterestLabels: false,
+                theme: 'monochrome',
+                show3dObjects: false,
+                showTransitLabels: true,
+                showRoadLabels: true
+              }}
+      let styleSatellite = 'mapbox://styles/mapbox/standard-satellite'
+
+      console.log('zoom:', mapRef.current.getZoom(),
+      '| displayLTS:', displayLTSRef.current,
+        'displayIntersections:', displayIntersectionsRef.current, 
+        'displayBikeParking:', displayBikeParkingRef.current, 
+        'displayBluebikeStations:', displayBluebikeStationsRef.current)
+
+      if (mapRef.current.isStyleLoaded()) {
+
+        let currentStyle = mapRef.current.getStyle().imports[0].data.name
+        // console.log('currentStyle: ', currentStyle)
+        let currentZoom = mapRef.current.getZoom()
+        // console.log('zoom: ', currentZoom)
+      
+        if ( displayIntersectionsRef.current ) {          
+          if ( (currentZoom > zoomThreshold) && (currentStyle=='Mapbox Standard') ) {
+            mapRef.current.setStyle(styleSatellite);
+          } else if ( (currentZoom < zoomThreshold ) && (currentStyle=='Mapbox Standard Satellite')) {
+            mapRef.current.setStyle(styleStandard, {config: styleStandardConfig});
+          }
+        } else {
+          if ( currentStyle!='Mapbox Standard' ) {
+            mapRef.current.setStyle(styleStandard, {config: styleStandardConfig});
+          }
+        }
+      }
+    })
+
+    mapRef.current.on('style.load', () => {
+        loadLayers(ltsLayerName, bikeParkingLayerName, bluebikeLayerName, intersectionsLayerName,)
+    });
 
     return () => {
       mapRef.current.remove()
@@ -238,7 +255,36 @@ function Map() {
     })
     // Deactivate selected features
     setActiveFeature()
-    mapRef.current.setFilter('selected-lts', ['in', 'osmid', '']);
+    setActiveFeatureType()
+    mapRef.current.setFilter(ltsLayerName+'-selected', ['in', 'osmid', '']);
+  }
+
+  const handleLayerCheckbox = (checkboxState, setState, displayState, layerID) => {
+    console.log(layerID + ' checkbox changed to ' + checkboxState);
+    setState(checkboxState => !checkboxState)
+
+    if(checkboxState) {
+      if(typeof mapRef.current.getLayer(layerID) == 'undefined') {
+        if (layerID == intersectionsLayerName) {
+          layerIntersections(mapRef, intersectionsLayerName, displayIntersectionsRef, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+        } else if (layerID == bikeParkingLayerName) {
+          layerBikeParking(mapRef, bikeParkingLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+        } else if (layerID == bluebikeLayerName) {
+          layerBlueBikes(mapRef, bluebikeLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+        } else if (layerID == ltsLayerName) {
+          layerLTS(mapRef, ltsLayerName, COLOR_SCALE, LINE_WIDTH, setActiveFeature, setActiveFeatureType)
+        } 
+      }
+      console.log("Turning on " + layerID)
+      mapRef.current.setLayoutProperty(layerID, 'visibility', 'visible');
+      if(typeof mapRef.current.getLayer(layerID+'selected') != 'undefined') {
+        mapRef.current.setLayoutProperty(layerID+'selected', 'visibility', 'visible');}
+    } else {
+      console.log("Turning off " + layerID)
+      mapRef.current.setLayoutProperty(layerID, 'visibility', 'none');
+      if(typeof mapRef.current.getLayer(layerID+'selected') != 'undefined') {
+        mapRef.current.setLayoutProperty(layerID+'selected', 'visibility', 'none');}
+    }
   }
 
   return (
@@ -248,7 +294,18 @@ function Map() {
           Longitude: {center[0].toFixed(4)} | Latitude: {center[1].toFixed(4)} | Zoom: {zoom.toFixed(2)}
         </div> */}
 
-        <Legend colorScale={COLOR_SCALE}/>
+        <Legend 
+          colorScale={COLOR_SCALE}
+          lts_display={displayLTSState}
+          lts1_display={displayLTS1Ref.current}
+          lts2_display={displayLTS2Ref.current}
+          lts3_display={displayLTS3Ref.current}
+          lts4_display={displayLTS4Ref.current}
+          handleLTS1={handleLTS1}
+          handleLTS2={handleLTS2}
+          handleLTS3={handleLTS3}
+          handleLTS4={handleLTS4}
+        />
 
         <button className='reset-button' onClick={handleReset}>
           Reset
@@ -257,7 +314,55 @@ function Map() {
           <ModeToggle advancedMode={advancedMode} />
         </button>
 
-        <SideBar selectedFeature={activeFeature} zoom={zoom} zoomLimit={ZOOM_UNION} advancedMode={advancedMode}/>
+        <div id='options-menu'>
+          <h1 id='options-title'>Map Features</h1>
+          <div><label className='options-layer'>
+            <input 
+              type="checkbox" 
+              name="ltsCheckbox"
+              checked={displayLTSRef.current} 
+              onChange={e => handleLayerCheckbox(
+                e.target.checked, setLTS, displayLTSRef, ltsLayerName)}
+            />
+            Stress Map
+          </label></div>
+          <div><label className='options-layer'>
+            <input 
+              type="checkbox" 
+              name="bikeParkingCheckbox"
+              checked={displayIntersectionsRef.current} 
+              onChange={e => handleLayerCheckbox(
+                e.target.checked, setIntersections, displayIntersectionsRef, intersectionsLayerName)}
+            />
+            Intersection Audits
+          </label></div>
+          <div><label className='options-layer'>
+            <input 
+              type="checkbox" 
+              name="bikeParkingCheckbox"
+              checked={displayBikeParkingRef.current} 
+              onChange={e => handleLayerCheckbox(
+                e.target.checked, setBikeParking, displayBikeParkingRef, bikeParkingLayerName)}
+            />
+            Bike Parking
+          </label></div>
+          <div><label className='options-layer'>
+            <input 
+              type="checkbox" 
+              name="bluebikeStationCheckbox"
+              checked={displayBluebikeStationsRef.current} 
+              onChange={e => handleLayerCheckbox(
+                e.target.checked, setBluebikeStations, displayBluebikeStationsRef, bluebikeLayerName)}
+            />
+            BlueBike Stations
+          </label></div>
+        </div>
+
+        <SideBar 
+            selectedFeature={activeFeature} 
+            selectedFeatureType={activeFeatureType} 
+            zoom={zoom} zoomLimit={ZOOM_UNION} 
+            advancedMode={advancedMode}/>
 
       </div>
     </>

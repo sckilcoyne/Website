@@ -71,7 +71,7 @@ h4, .head4 {
   margin-bottom: 15px;
 }
 
-p, ul {
+p, ul, ol {
   color:#524F41;
   font-family: rubik, sans-serif;
   font-size: 1.0em;
@@ -126,6 +126,44 @@ p, ul {
   cursor: pointer;
 }
 
+.bike-parking-button {
+  position: absolute;
+  top: 25px;
+  z-index: 1;
+  left: 50px;
+  padding: 4px 10px;
+  border-radius: 10px;
+  cursor: pointer;
+}
+
+#options-menu {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  max-width: 150px;
+  background-color: #ffffffee;
+  padding: 10px;
+  z-index: 1;
+}
+
+#options-title {
+  color:#36342C;
+  font-family: rubik, sans-serif;
+  font-size: 1.4em;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 5px;
+}
+
+.options-layer {
+  color:#36342C;
+  font-family: rubik, sans-serif;
+  font-size: 1em;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 5px;
+}
+
 .sidebar {
   position: absolute;
   top: 50px;
@@ -138,14 +176,15 @@ p, ul {
   /* border: 1px solid #353535; */
   padding: 10px;
   z-index: 1;
+  max-width: 450px;
 }
 
 .sidebar .basicMode {
   display: block;
-  width: 411px;
+  /* max-width: 400px;
   background-color: #F8F8F8;
   border-radius: 4px;
-  filter: drop-shadow(0px 1px 6px #2927211A);
+  filter: drop-shadow(0px 1px 6px #2927211A); */
 }
 .sidebar .advancedMode {
   display: block;
@@ -198,6 +237,16 @@ td {
   font-weight: 600;
   text-align: left;
   color: #1B1A16;
+  margin-bottom: 5px;
+}
+
+.tableSubheading {
+  font-family: rubik, sans-serif;
+  font-size: 1.2em;
+  font-weight: 450;
+  text-align: left;
+  color: #1B1A16;
+  margin-bottom: 5px;
 }
 
 .tableBox{
@@ -225,6 +274,7 @@ td {
   font-size: 1.25em;
   font-weight: 400;
   font-family: rubik, sans-serif;
+  background-color: #ffffff;
 }
 
 .tableAdvancedMode {
