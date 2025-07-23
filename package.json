@@ -1,5 +1,5 @@
 {
-  "homepage": "https://labs.bostoncyclistsunion.org",
+  "homepage": "https://sckilcoyne.github.io/Website",
   "name": "website",
   "private": false,
   "version": "0.0.0",
@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist --cname labs.bostoncyclistsunion.org"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@mdx-js/react": "^3.1.0",

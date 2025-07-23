@@ -26,3 +26,5 @@ dist-ssr
 *.sw?
 /.labs_website
 /.demo*
+package.json
+vite.config.js

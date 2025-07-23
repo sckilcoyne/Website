@@ -4,6 +4,7 @@ import mdx from '@mdx-js/rollup'
 
 // https://vite.dev/config/
 export default defineConfig({
+  base: '/Website/', // for deploying to repo.github.io, comment out for labs.bcu.org
   plugins: [
     {enforce: 'pre', ...mdx({/* jsxImportSource: …, otherOptions… */})},
     react({include: /\.(jsx|js|mdx|md|tsx|ts)$/})
