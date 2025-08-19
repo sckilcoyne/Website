@@ -11,8 +11,8 @@
 import { Link } from 'react-router-dom';
 import { 
     LTS_PAGE_ROUTE,
-    MAP_PAGE_ROUTE,
-    LABS_PAGE_ROUTE,
+    // MAP_PAGE_ROUTE,
+    // LABS_PAGE_ROUTE,
     OSM_PAGE_ROUTE,
         } from '../../routes/routes.jsx';
 import ProjectButton from '../../Buttons/ProjectButton';
@@ -51,7 +51,7 @@ const PageText = [
         paragraph: [
             "This map attempts to rate every street segment in Boston, Cambridge, Somerville, and Brookline based on how comfortable it is to bike on. ",
             "This is based on a concept called ",
-            <Link to={LTS_PAGE_ROUTE}>Level of Traffic Stress</Link>,
+            <Link to={LTS_PAGE_ROUTE} key='link to ltstress'>Level of Traffic Stress</Link>,
             ", which evaluates streets based on some of the most important features that affect the biking experience. ",
             "This includes things like bike lanes and if they have separation, but also how many cars are traveling on the street and how fast those cars are going. ",
             "As many cyclists intuitively understand, it may be more comfortable to bike on a quiet residential street than a high-speed arterial street (e.g. Mass Ave.) with a painted bike lane. ",
@@ -59,13 +59,13 @@ const PageText = [
         ]
     },
     {
-        paragraph: <Link to={LTS_PAGE_ROUTE}>Read more about our methodology here.</Link>,
+        paragraph: <Link to={LTS_PAGE_ROUTE} key='link to method'>Read more about our methodology here.</Link>,
     },
     {
         subheading: 'Why is BCU Labs making this map?',
         paragraph: [
             "While it is true that the City of Boston has created a ",
-            <Link to="https://boston.maps.arcgis.com/apps/webappviewer/index.html?id=f0be9f03ada74a028cd05e4893a22ca4">Level of Traffic Stress map</Link>,
+            <Link to="https://boston.maps.arcgis.com/apps/webappviewer/index.html?id=f0be9f03ada74a028cd05e4893a22ca4" key='link to lts'>Level of Traffic Stress map</Link>,
             ", this is not a particularly useful tool for the cycling community. ",
             "For example, if you wanted to bike from Allston to Jamaica Plain, two neighborhoods of Boston, you would likely want to bike through Brookline, an independent city which isn’t included on the City of Boston’s map.",
         ]    
@@ -79,7 +79,7 @@ const PageText = [
     {
         paragraph: [
             "Additionally, by utilizing ",
-            <Link to="https://www.openstreetmap.org">OpenStreetMap (OSM)</Link>,
+            <Link to="https://www.openstreetmap.org" key='link to osmmmm'>OpenStreetMap (OSM)</Link>,
             " as the primary data source, we are able to continuously update street ratings as the streets change or the data accuracy improves. ",
             // <Link to={OSM_PAGE_ROUTE}>(Start here to learn how to contribute to OSM)</Link>,
         ]    
@@ -124,9 +124,9 @@ const PageText = [
     {
         paragraph: [
             "You can learn to ",
-            <Link to={OSM_PAGE_ROUTE}>fix the data yourself here</Link>,
+            <Link to={OSM_PAGE_ROUTE} key='link to fix this data'>fix the data yourself here</Link>,
             ", or fill out ",
-            <Link to="https://forms.gle/ytyKV7ZrnzYZToCi9">this form</Link>,
+            <Link to="https://forms.gle/ytyKV7ZrnzYZToCi9" key='link to a form'>this form</Link>,
             " with what you know and the BCU Labs team will bike there ourselves to survey, then fix the data."
         ]
     },

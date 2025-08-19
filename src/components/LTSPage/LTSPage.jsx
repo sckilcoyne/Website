@@ -1,5 +1,5 @@
 import './LTSPage.css'
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 import LabsHeader from '../ImageLinks/LabsHeader';
 import LabsFooter from '../Footer/Footer';

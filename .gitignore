@@ -28,3 +28,9 @@ dist-ssr
 /.demo*
 package.json
 vite.config.js
+
+# Next.js
+.next
+next-env.d.ts
+dist
+out

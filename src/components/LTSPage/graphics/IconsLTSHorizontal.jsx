@@ -1,13 +1,13 @@
 import './IconsLTSHorizontal.css'
 
-import icon_lts1 from '/Icon_LTS1.svg'
-import icon_lts2 from '/Icon_LTS2.svg'
-import icon_lts3 from '/Icon_LTS3.svg'
-import icon_lts4 from '/Icon_LTS4.svg'
-import text_lts1 from '/Text_LTS1.svg'
-import text_lts2 from '/Text_LTS2.svg'
-import text_lts3 from '/Text_LTS3.svg'
-import text_lts4 from '/Text_LTS4.svg'
+import icon_lts1 from '../../../public/Icon_LTS1.svg'
+import icon_lts2 from '../../../public/Icon_LTS2.svg'
+import icon_lts3 from '../../../public/Icon_LTS3.svg'
+import icon_lts4 from '../../../public/Icon_LTS4.svg'
+import text_lts1 from '../../../public/Text_LTS1.svg'
+import text_lts2 from '../../../public/Text_LTS2.svg'
+import text_lts3 from '../../../public/Text_LTS3.svg'
+import text_lts4 from '../../../public/Text_LTS4.svg'
 
 const lts_names = ["LTS_1", "LTS_2", "LTS_3", "LTS_4"]
 const lts_to_icon_mapping = {
@@ -34,13 +34,14 @@ function LTSPageLtsImageWithCaption(props) {
 
     return(
         <div className="lts-icon-item">
-            <img src={lts_to_icon_mapping[lts_name].icon} alt={`${lts_name} icon`} />
+            <img src={lts_to_icon_mapping[lts_name].icon.src} alt={`${lts_name} icon`} />
             <img src={lts_to_icon_mapping[lts_name].text} alt={`${lts_name} text`} />
         </div>
     )
 }
 
 export default function LTSPageLtsHorizontalImage(props) {
+    console.debug(props)
     return(
         <div className="lts-icon-container">
             {

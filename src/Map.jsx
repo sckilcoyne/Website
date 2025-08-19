@@ -3,7 +3,7 @@ import { useRef, useEffect, useState } from 'react'
 import mapboxgl from 'mapbox-gl'
 
 import 'mapbox-gl/dist/mapbox-gl.css';
-import './App.css'
+// import './App.css'
 
 import Legend from './Legend';
 import SideBar, {ModeToggle} from './components/selection/SideBar'
@@ -177,8 +177,6 @@ function Map() {
       }
     });
 
-    let q = 1
-
     mapRef.current.on('load', function () {
       loadLayers(ltsLayerName, bikeParkingLayerName, bluebikeLayerName, intersectionsLayerName,)
       
@@ -196,7 +194,7 @@ function Map() {
       mapRef.current.addControl(new mapboxgl.FullscreenControl());
     })
 
-    mapRef.current.on('zoom', (e) => {
+    mapRef.current.on('zoom', () => {
       let zoomThreshold = 16
       let styleStandard = 'mapbox://styles/mapbox/standard'
       let styleStandardConfig = {
@@ -245,7 +243,7 @@ function Map() {
     return () => {
       mapRef.current.remove()
     }
-  }, [])
+  })
 
   const handleReset = () => {
     // Reset zoom

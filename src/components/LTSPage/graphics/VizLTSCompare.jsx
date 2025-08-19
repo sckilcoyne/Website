@@ -2,8 +2,8 @@ import './VizLTSCompare.css'
 
 import { useState } from 'react'
 
-import viz_LTS1 from '/Viz_LTS1.svg'
-import viz_LTS4 from '/Viz_LTS4.svg'
+import viz_LTS1 from '../../../public/Viz_LTS1.svg'
+import viz_LTS4 from '../../../public/Viz_LTS4.svg'
 
 const lts_names = ["LTS_1", "LTS_4"]
 const lts_to_icon_mapping = {
@@ -20,6 +20,7 @@ const lts_to_icon_mapping = {
 }
 
 export default function LTS_Viz_Compare(props) {
+    console.debug(props)
     // image popup https://www.geeksforgeeks.org/how-to-center-a-view-component-on-screen/
     const [dialog, setDialog] = useState(false);
     const [imageSrc, setImageSrc] = useState();
@@ -31,7 +32,7 @@ export default function LTS_Viz_Compare(props) {
     const clickImg = ( src ) => (event) =>{
         setDialog(!dialog);
         setImageSrc(src);
-        console.log("Image clicked:", src, dialog)
+        console.log("Image clicked:", src, dialog, event)
     }
 
     function LTSVizWithCaption(props) {
@@ -39,7 +40,7 @@ export default function LTS_Viz_Compare(props) {
     
         return(
             <button className="lts-viz-item" onClick={clickImg(lts_to_icon_mapping[lts_name].icon)}>
-                <img src={lts_to_icon_mapping[lts_name].icon} alt={`${lts_name} icon`} />
+                <img src={lts_to_icon_mapping[lts_name].icon.src} alt={`${lts_name} icon`} />
             </button>
         )
     }

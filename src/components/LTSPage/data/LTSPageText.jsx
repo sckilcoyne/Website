@@ -24,7 +24,7 @@ const PageText = [
         subheading: 'A method for assessing how bike-friendly a street truly is.',
         paragraph: [
             "Level of Traffic Stress is a system developed in part by ",
-            <Link to="https://peterfurth.sites.northeastern.edu/2014/05/21/criteria-for-level-of-traffic-stress/">Northeastern University’s Professor Peter Furth</Link>,
+            <Link to="https://peterfurth.sites.northeastern.edu/2014/05/21/criteria-for-level-of-traffic-stress/" key='link to furth'>Northeastern University’s Professor Peter Furth</Link>,
             " to capture how stressful or comfortable a street feels for cyclists. While a painted bike lane might look bike-friendly on a map, factors like fast and heavy traffic can still make it stressful. The Level of Traffic Stress system considers these elements to give cyclists and planners a clearer view of which routes are truly comfortable.",
         ]
     },
@@ -36,9 +36,9 @@ const PageText = [
         title: 'How does this map work?',
         subheading: "The map analyzes road and traffic data to rate a street's bike friendliness.",
         paragraph: [
-            <Link to={OSM_PAGE_ROUTE}>We use data</Link>,
+            <Link to={OSM_PAGE_ROUTE} key='link to we use data'>We use data</Link>,
             ' from ',
-            <Link to="https://www.openstreetmap.org">OpenStreetMap (OSM)</Link>,
+            <Link to="https://www.openstreetmap.org" key='link to openmaps'>OpenStreetMap (OSM)</Link>,
             ', an open-source online map that people around the world help build and update. Each street segment is tagged with details such as speed limit, traffic, etc.. which we use to calculate a Level of Traffic Stress for each street segment.',
         ],
         graphic: <LTS_Viz_Compare />
@@ -63,7 +63,7 @@ const PageText = [
         title: 'A deep dive into Level of Traffic Stress',
         paragraph: [
             "Our Stress Map is based on a heuristic concept called ",
-            <Link to="https://peterfurth.sites.northeastern.edu/2014/05/21/criteria-for-level-of-traffic-stress/">Level of Traffic Stress (LTS)</Link>,
+            <Link to="https://peterfurth.sites.northeastern.edu/2014/05/21/criteria-for-level-of-traffic-stress/" key='link to levelts'>Level of Traffic Stress (LTS)</Link>,
             ". ",
             "This has been developed in part by Professor Peter Furth of Northeastern University (who is also a Boston Cyclists Union Board Member). ",
             "LTS is commonly used by planning and engineering professionals.",
@@ -77,7 +77,7 @@ const PageText = [
             "Unfortunately, our primary data source, OSM, does not have all of the necessary data tagged for each street segment. ",
             "Engineers could manually collect data for individual street improvement projects to accurately rate a street segment, but to achieve a regional map, we make educated assumptions on what the street looks like. ",
             "If you see something wrong, ",
-            <Link to={OSM_PAGE_ROUTE}>learn how to fix the data here</Link>,
+            <Link to={OSM_PAGE_ROUTE} key='link to osmroute'>learn how to fix the data here</Link>,
             "."
         ]
     },
@@ -100,7 +100,7 @@ const PageText = [
             "What makes cycling dangerous is the presence, proximity, volume, and speed of cars and trucks. ",
             "A bike lane can help position cyclists and drivers into different spaces on the street. ",
             "But what if the bike lane is adjacent to parked cars in a way that increases the risk of getting ",
-            <Link to="https://en.wikipedia.org/wiki/Dooring">"doored"</Link>,
+            <Link to="https://en.wikipedia.org/wiki/Dooring" key='link to doored'>`doored`</Link>,
             " (hit by a passenger opening a vehicle door)? ",
             "Separating a bike lane with physical barriers like concrete or flex-posts further increases the separation and therefore comfort of cycling on a street. ",
             "For streets with high traffic volumes and high-speed traffic, increasing physical bike lane separation becomes more critical to building a street that is inviting to cycle on.",
@@ -110,12 +110,12 @@ const PageText = [
         paragraph: [
             "On streets where there isn’t enough space to build high-quality bike lanes, the city can reduce conflicts with cars by reducing the speed that people can drive, and/or the volume of traffic. ",
             "This is called ",
-            <Link to="https://en.wikipedia.org/wiki/Traffic_calming">traffic calming</Link>,
+            <Link to="https://en.wikipedia.org/wiki/Traffic_calming" key='link to trafficcalming'>traffic calming</Link>,
             " and there are numerous tools to make a street safer this way. ",
             "A popular traffic calming option recently has been ",
-            <Link to="https://nacto.org/publication/urban-street-design-guide/street-design-elements/vertical-speed-control-elements/speed-hump/">speed humps</Link>,
+            <Link to="https://nacto.org/publication/urban-street-design-guide/street-design-elements/vertical-speed-control-elements/speed-hump/" key='link to sp[eedhumps'>speed humps</Link>,
             ", which Boston has been installing as part of their ",
-            <Link to="https://mass.streetsblog.org/2023/05/22/wu-admin-announces-safety-surge-of-traffic-calming-for-neighborhood-streets">Safety Surge</Link>,
+            <Link to="https://mass.streetsblog.org/2023/05/22/wu-admin-announces-safety-surge-of-traffic-calming-for-neighborhood-streets" key='link to safetysurge'>Safety Surge</Link>,
             " effort."
         ]
     },

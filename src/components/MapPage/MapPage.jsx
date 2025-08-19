@@ -3,7 +3,7 @@ import './MapPage.css'
 import Map from '../../Map';
 
 import LabsHeader from '../ImageLinks/LabsHeader';
-import BikeStressMap from '../ImageLinks/BikeStressMap';
+// import BikeStressMap from '../ImageLinks/BikeStressMap';
 
 import textHeader from './data/MapPageTextHeader'
 import LabsFooter from '../Footer/Footer';

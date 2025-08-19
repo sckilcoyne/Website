@@ -10,8 +10,8 @@
 
 import { Link } from 'react-router-dom';
 import { 
-    LTS_PAGE_ROUTE, 
-    MAP_PAGE_ROUTE, 
+    // LTS_PAGE_ROUTE, 
+    // MAP_PAGE_ROUTE, 
     LABS_PAGE_ROUTE, 
     OSM_PAGE_ROUTE 
         } from '../../routes/routes.jsx';
@@ -41,7 +41,7 @@ const PageText = [
             'The Bike Stress Map is our first project, rating every street in Boston, Cambridge, ',
             'Somerville, and Brookline based on how comfortable it is to ride a bike on. ',
             'It is a work in progress and a community effort – read below for ways to contribute or ',
-            <Link to={OSM_PAGE_ROUTE}>update the map</Link>,
+            <Link to={OSM_PAGE_ROUTE} key='update map link'>update the map</Link>,
             '.'
         ]
     },

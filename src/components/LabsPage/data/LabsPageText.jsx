@@ -19,9 +19,9 @@ const LabsPageText = [
         subheading: 'Experiments in data-backed advocacy',
         paragraph: [
             'We are a volunteer-driven group within ', 
-            <Link to="https://bostoncyclistsunion.org/" >Boston Cyclists Union</Link>,
+            <Link to="https://bostoncyclistsunion.org/"  key='link to bcu'>Boston Cyclists Union</Link>,
             '. You can ',
-            <Link to="https://docs.google.com/forms/d/e/1FAIpQLSefzxEQ-CAbJd_rrt90DHvdglYvP9RLqdDUVsFq28onw9xXJQ/viewform" >join BCU Labs here.</Link>,            
+            <Link to="https://docs.google.com/forms/d/e/1FAIpQLSefzxEQ-CAbJd_rrt90DHvdglYvP9RLqdDUVsFq28onw9xXJQ/viewform"  key='link to joinus'>join BCU Labs here.</Link>,            
         ],
     },
     {

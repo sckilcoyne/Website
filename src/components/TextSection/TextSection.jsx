@@ -7,11 +7,8 @@
 
 import './TextSection.css';
 
-import { Parser } from "html-to-react"
-import React, { Component } from "react";
-import ReactDOMServer from "react-dom/server"
-// const HtmlToReactParser = require('html-to-react').Parser;
-const htmlToReactParser = new Parser(React);
+// import React, { Component } from "react";
+// import ReactDOMServer from "react-dom/server"
 
 function Para(input) {
     let paragraph = input.paragraph

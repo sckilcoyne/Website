@@ -5,27 +5,35 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
     "lint": "eslint .",
-    "preview": "vite preview",
-    "predeploy": "npm run build",
-    "deploy": "gh-pages -d dist"
+    "deploy": "next build && echo 'true' > ./out/.nojekyll && gh-pages -d out -t"
   },
   "dependencies": {
+    "@mdx-js/loader": "^3.1.0",
     "@mdx-js/react": "^3.1.0",
     "@mdx-js/rollup": "^3.1.0",
+    "@next/eslint-plugin-next": "^15.4.5",
+    "@next/mdx": "^15.4.5",
+    "@types/mdx": "^2.0.13",
+    "ajv": "^8.17.1",
     "csv2geojson": "^5.1.2",
     "html-to-react": "1.7.0",
     "jmespath": "^0.16.0",
     "mapbox-gl": "^3.8.0",
+    "next": "^15.4.7",
     "osmtogeojson": "^3.0.0-beta.5",
     "overpass-ts": "^4.3.8",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
     "react-router-dom": "^7.1.5",
     "react-slick": "^0.30.3",
     "slick-carousel": "^1.8.1"
+  },
+  "overrides": {
+    "ajv": "^8.17.1"
   },
   "devDependencies": {
     "@eslint/js": "^9.15.0",
@@ -33,6 +41,7 @@
     "@types/react-dom": "^18.3.1",
     "@vitejs/plugin-react": "^4.3.4",
     "eslint": "^9.15.0",
+    "eslint-config-next": "^15.4.7",
     "eslint-plugin-react": "^7.37.2",
     "eslint-plugin-react-hooks": "^5.0.0",
     "eslint-plugin-react-refresh": "^0.4.14",

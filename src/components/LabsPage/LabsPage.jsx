@@ -1,5 +1,5 @@
 import './LabsPage.css'
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 import { MAP_PAGE_ROUTE } from '../routes/routes.jsx';
 
 import LabsHeader from '../ImageLinks/LabsHeader';
