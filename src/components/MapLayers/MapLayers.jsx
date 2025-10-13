@@ -1,6 +1,7 @@
 import Overpass from '../Overpass/overpass';
 import Bluebikes from '../GBFS/GBFS';
 import Intersections from '../Intersections/Intersections';
+import blueb_classic from '/bluebike_classic.png'
 
 function hoverMousePointer (mapRef, layerID) {
     // Change the cursor to a pointer when the mouse is over the LTS layer.
@@ -198,7 +199,7 @@ export function layerBlueBikes (mapRef,
   Bluebikes().then((bluebikeStationsGeojson) => {
     // console.log('bluebikeStationsGeojson', bluebikeStationsGeojson)
     console.log('bluebikeStationsGeojson loaded')
-    mapRef.current.loadImage('/bluebike_classic.png', (error, image) => {
+    mapRef.current.loadImage(blueb_classic, (error, image) => {
       if (error) throw error;
       // Add the loaded image to the style's sprite.
       mapRef.current.addImage('bluebike_classic_img', image);
