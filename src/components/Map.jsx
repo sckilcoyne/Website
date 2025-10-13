@@ -1,12 +1,14 @@
 import { useRef, useEffect, useState } from 'react'
 // import { renderToStaticMarkup } from 'react-dom/server';
+
 import mapboxgl from 'mapbox-gl'
+// import Map from 'react-map-gl/mapbox';
 
 import 'mapbox-gl/dist/mapbox-gl.css';
 // import './App.css'
 
-import Legend from './Legend';
-import SideBar, {ModeToggle} from './components/selection/SideBar'
+import Legend from '../Legend';
+import SideBar, {ModeToggle} from './selection/SideBar'
 // import {ModeToggle} from './components/selection/SideBar'
 
 import { 
@@ -14,7 +16,7 @@ import {
   layerLTS,
   layerBikeParking,
   layerBlueBikes,
-} from './components/MapLayers/MapLayers';
+} from './MapLayers/MapLayers';
 
 // https://docs.mapbox.com/help/tutorials/use-mapbox-gl-js-with-react/
 
