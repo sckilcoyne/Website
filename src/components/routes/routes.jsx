@@ -1,9 +1,0 @@
-export const LABS_PAGE_ROUTE = "/"
-export const MAP_PAGE_ROUTE = "/map"
-export const LTS_PAGE_ROUTE = "/stress"
-export const OSM_PAGE_ROUTE = "/OSM"
-export const OSMEDIT_PAGE_ROUTE = "/OSM/edit"
-export const INX_PAGE_ROUTE = "/intersections"
-export const PINX_PAGE_ROUTE = "/intersections/protected"
-export const INXAUDIT_PAGE_ROUTE = "/intersections/audit"
-export const BIKEPARKING_PAGE_ROUTE = '/bikeparking'
