@@ -16,11 +16,12 @@ function hoverMousePointer (mapRef, layerID) {
 }
 
 function featureClick (mapRef, layerID, featureID, setActiveFeature, setActiveFeatureType) {
-    // When a click event occurs on a feature in the places layer, open a popup at the
-    // location of the feature, with description HTML from its properties.
     mapRef.current.on('click', layerID, (e) => {
         console.log('MapLayers/click/e.features[0]', e.features[0])
         console.log('MapLayers/click/e.features[0].geometry.coordinates', e.features[0].geometry.coordinates)
+
+        console.log('MapLayers/click/setActiveFeature', setActiveFeature)
+        console.log('MapLayers/click/setActiveFeatureType', setActiveFeatureType)
 
         setActiveFeature(e.features[0])
         setActiveFeatureType(featureID)
@@ -111,9 +112,10 @@ export function layerLTS (  mapRef, ltsLayerName,
 
 }
 
-export function layerIntersections (mapRef, 
-                                    intersectionsLayerName, displayIntersections,
-                                    COLOR_SCALE, 
+export function layerIntersections (mapRef,
+                                    // intersectionsLayerName, displayIntersections,
+                                    intersectionsLayerName,
+                                    COLOR_SCALE,
                                     setActiveFeature, setActiveFeatureType
                                   ) {
   Intersections(mapRef).then((intersections_json) => {
@@ -161,8 +163,9 @@ export function layerIntersections (mapRef,
     }
 })}
 
-export function layerBikeParking (mapRef, 
-                                  bikeParkingLayerName,                                   COLOR_SCALE,
+export function layerBikeParking (mapRef,
+                                  bikeParkingLayerName,
+                                  COLOR_SCALE,
                                   setActiveFeature, setActiveFeatureType
                                 ) {
   Overpass(mapRef).then((bike_parking_json) => {

@@ -98,10 +98,11 @@ function Map() {
       layerBikeParking(mapRef, bikeParkingLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
     }
     if (displayBluebikeStationsRef.current) {
-      layerBlueBikes(mapRef, bluebikeLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+      layerBlueBikes(mapRef, bluebikeLayerName, setActiveFeature, setActiveFeatureType)
     }
     if (displayIntersectionsRef.current) {
-      layerIntersections(mapRef, intersectionsLayerName, displayIntersectionsRef, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+      // layerIntersections(mapRef, intersectionsLayerName, displayIntersectionsRef, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+      layerIntersections(mapRef, intersectionsLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
     }
   };
 
@@ -266,11 +267,12 @@ function Map() {
     if(checkboxState) {
       if(typeof mapRef.current.getLayer(layerID) == 'undefined') {
         if (layerID == intersectionsLayerName) {
-          layerIntersections(mapRef, intersectionsLayerName, displayIntersectionsRef, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+          // layerIntersections(mapRef, intersectionsLayerName, displayIntersectionsRef, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+          layerIntersections(mapRef, intersectionsLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
         } else if (layerID == bikeParkingLayerName) {
           layerBikeParking(mapRef, bikeParkingLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
         } else if (layerID == bluebikeLayerName) {
-          layerBlueBikes(mapRef, bluebikeLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+          layerBlueBikes(mapRef, bluebikeLayerName, setActiveFeature, setActiveFeatureType)
         } else if (layerID == ltsLayerName) {
           layerLTS(mapRef, ltsLayerName, COLOR_SCALE, LINE_WIDTH, setActiveFeature, setActiveFeatureType)
         } 
