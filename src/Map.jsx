@@ -61,6 +61,9 @@ function Map() {
     'displayBluebikeStationsRef.current', displayBluebikeStationsRef.current,
   )
 
+  console.log(window.location.pathname) // just the path without the domain
+  console.log(window.location.href) // full URL
+
   const [displayLTS1State, setLTS1] = useState(true);
   const [displayLTS2State, setLTS2] = useState(true);
   const [displayLTS3State, setLTS3] = useState(true);
@@ -162,6 +165,7 @@ function Map() {
       minZoom: MIN_ZOOM,
       maxZoom: MAX_ZOOM,
       maxBounds: BOUNDS,
+      hash: "map",
       // style: 'mapbox://styles/mapbox/light-v11',
       // light-v11 doesn't seem like able to show T stations, using config can mimic light-v11 on standard style
       style: 'mapbox://styles/mapbox/standard',
