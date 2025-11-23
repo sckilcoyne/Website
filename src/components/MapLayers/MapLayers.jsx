@@ -205,7 +205,8 @@ export function layerBlueBikes (mapRef,
     mapRef.current.loadImage(blueb_classic, (error, image) => {
       if (error) throw error;
       // Add the loaded image to the style's sprite.
-      mapRef.current.addImage('bluebike_classic_img', image);
+      if (!mapRef.current.hasImage('bluebike_classic_img')) {
+        mapRef.current.addImage('bluebike_classic_img', image);}
 
       if (typeof mapRef.current.getSource('bluebike-stations') == 'undefined'){
         mapRef.current.addSource('bluebike-stations', {
