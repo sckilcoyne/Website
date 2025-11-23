@@ -33,17 +33,42 @@ const COLOR_SCALE = ['#007191', '#62c8d3', '#f47a00', '#d31f11', 'grey'] // http
 // rgb(0, 113, 145), rgb(98, 200, 211), rgb(244, 122, 0), rgb(211, 31, 17)
 
 function Map() {
+  console.log(window.location.href) // full URL
+  console.log(window.location.pathname) // just the path without the domain
+  console.log(window.location.hash) // just the hash fragment of the url
+
+  function setFromFragment (hashName, defaultValue) {
+    // console.log('hashName', hashName)
+    if (window.location.hash.includes(hashName + "=")) {
+      const splitHash = window.location.hash.split('&')
+      // console.log(splitHash)
+      const filterHash = splitHash.filter(str => str.includes(hashName))
+      // console.log(filterHash)
+      var hashValue = filterHash[0].split('=')[1]
+      // console.log(hashValue)
+      if (hashValue == 'true') {hashValue = true}
+      else if (hashValue == 'false') {hashValue = false}
+      else if (hashValue == '') {return}
+
+      return hashValue
+    } else {
+      if (defaultValue == '') {return}
+      window.location.hash += "&" + hashName + "=" + defaultValue;
+      return defaultValue
+    }
+  }
+
   // stores the feature that the user is currently viewing (triggers the modal)
-  const [activeFeature, setActiveFeature] = useState()
-  const [activeFeatureType, setActiveFeatureType] = useState()
+  const [activeFeature, setActiveFeature] = useState(setFromFragment('selected', ''))
+  const [activeFeatureType, setActiveFeatureType] = useState(setFromFragment('selectedType', ''))
 
   const [advancedMode, setAdvancedMode] = useState(false);
   // console.log('advancedMode:', advancedMode);
   
-  const [displayLTSState, setLTS] = useState(true);
-  const [displayIntersectionsState, setIntersections] = useState(false);
-  const [displayBikeParkingState, setBikeParking] = useState(false);
-  const [displayBluebikeStationsState, setBluebikeStations] = useState(false);
+  const [displayLTSState, setLTS] = useState(setFromFragment('lts', true));
+  const [displayIntersectionsState, setIntersections] = useState(setFromFragment('intx', false));
+  const [displayBikeParkingState, setBikeParking] = useState(setFromFragment('bikePark', false));
+  const [displayBluebikeStationsState, setBluebikeStations] = useState(setFromFragment('bluebike', false));
   
   const displayLTSRef = useRef()
   const displayIntersectionsRef = useRef()
@@ -61,13 +86,10 @@ function Map() {
     'displayBluebikeStationsRef.current', displayBluebikeStationsRef.current,
   )
 
-  console.log(window.location.pathname) // just the path without the domain
-  console.log(window.location.href) // full URL
-
-  const [displayLTS1State, setLTS1] = useState(true);
-  const [displayLTS2State, setLTS2] = useState(true);
-  const [displayLTS3State, setLTS3] = useState(true);
-  const [displayLTS4State, setLTS4] = useState(true);
+  const [displayLTS1State, setLTS1] = useState(setFromFragment('lts1', true));
+  const [displayLTS2State, setLTS2] = useState(setFromFragment('lts2', true));
+  const [displayLTS3State, setLTS3] = useState(setFromFragment('lts3', true));
+  const [displayLTS4State, setLTS4] = useState(setFromFragment('lts4', true));
 
   const displayLTS1Ref = useRef()
   const displayLTS2Ref = useRef()
@@ -90,20 +112,21 @@ function Map() {
       displayLTSState, displayIntersectionsState, displayBikeParkingState, displayBluebikeStationsState,)
     console.log('loadLayers Ref',
       displayLTSRef.current, displayIntersectionsRef.current, displayBikeParkingRef.current, displayBluebikeStationsRef.current)
-    if (displayLTSRef.current) {
+    if (displayLTSRef.current == true) {
       layerLTS(mapRef, ltsLayerName, COLOR_SCALE, LINE_WIDTH, setActiveFeature, setActiveFeatureType)
       if (!displayLTS1Ref.current) { setLTSfilter(1) }
       if (!displayLTS2Ref.current) { setLTSfilter(2) }
       if (!displayLTS3Ref.current) { setLTSfilter(3) }
       if (!displayLTS4Ref.current) { setLTSfilter(4) }
     }
-    if (displayBikeParkingRef.current) {
+    if (displayBikeParkingRef.current == true) {
       layerBikeParking(mapRef, bikeParkingLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
     }
-    if (displayBluebikeStationsRef.current) {
+    if (displayBluebikeStationsRef.current == true) {
+      console.log('displayBluebikeStationsRef is on')
       layerBlueBikes(mapRef, bluebikeLayerName, setActiveFeature, setActiveFeatureType)
     }
-    if (displayIntersectionsRef.current) {
+    if (displayIntersectionsRef.current == true) {
       // layerIntersections(mapRef, intersectionsLayerName, displayIntersectionsRef, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
       layerIntersections(mapRef, intersectionsLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
     }
@@ -291,7 +314,26 @@ function Map() {
       if(typeof mapRef.current.getLayer(layerID+'selected') != 'undefined') {
         mapRef.current.setLayoutProperty(layerID+'selected', 'visibility', 'none');}
     }
+
   }
+
+  function OptionsMenu({checkboxName, setLayer, displayRef, layerName, label}) {
+      console.log(label, 'optionsMenu: ', displayRef.current)
+      if (displayRef.current == 'hidden') {
+        return null;
+      }
+      // console.log(checkboxName, setLayer, displayRef, layerName, label)
+      return <div><label className='options-layer'>
+            <input 
+              type="checkbox" 
+              name={checkboxName}
+              checked={displayRef.current} 
+              onChange={e => handleLayerCheckbox(
+                e.target.checked, setLayer, displayRef, layerName)}
+            />
+            {label}
+          </label></div>
+    }
 
   return (
     <>
@@ -322,46 +364,34 @@ function Map() {
 
         <div id='options-menu'>
           <h1 id='options-title'>Map Features</h1>
-          <div><label className='options-layer'>
-            <input 
-              type="checkbox" 
-              name="ltsCheckbox"
-              checked={displayLTSRef.current} 
-              onChange={e => handleLayerCheckbox(
-                e.target.checked, setLTS, displayLTSRef, ltsLayerName)}
-            />
-            Stress Map
-          </label></div>
-          <div><label className='options-layer'>
-            <input 
-              type="checkbox" 
-              name="bikeParkingCheckbox"
-              checked={displayIntersectionsRef.current} 
-              onChange={e => handleLayerCheckbox(
-                e.target.checked, setIntersections, displayIntersectionsRef, intersectionsLayerName)}
-            />
-            Intersection Audits
-          </label></div>
-          <div><label className='options-layer'>
-            <input 
-              type="checkbox" 
-              name="bikeParkingCheckbox"
-              checked={displayBikeParkingRef.current} 
-              onChange={e => handleLayerCheckbox(
-                e.target.checked, setBikeParking, displayBikeParkingRef, bikeParkingLayerName)}
-            />
-            Bike Parking
-          </label></div>
-          <div><label className='options-layer'>
-            <input 
-              type="checkbox" 
-              name="bluebikeStationCheckbox"
-              checked={displayBluebikeStationsRef.current} 
-              onChange={e => handleLayerCheckbox(
-                e.target.checked, setBluebikeStations, displayBluebikeStationsRef, bluebikeLayerName)}
-            />
-            BlueBike Stations
-          </label></div>
+          <OptionsMenu 
+            checkboxName="ltsCheckbox"
+            setLayer={setLTS}
+            displayRef={displayLTSRef}
+            layerName={ltsLayerName}
+            label="Stress Map"
+          />
+          <OptionsMenu 
+            checkboxName="intersectionAuditCheckbox"
+            setLayer={setIntersections}
+            displayRef={displayIntersectionsRef}
+            layerName={intersectionsLayerName}
+            label="Intersection Audits"
+          />
+          <OptionsMenu 
+            checkboxName="bikeParkingCheckbox"
+            setLayer={setBikeParking}
+            displayRef={displayBikeParkingRef}
+            layerName={bikeParkingLayerName}
+            label="Bike Parking"
+          />
+          <OptionsMenu 
+            checkboxName="bluebikeStationCheckbox"
+            setLayer={setBluebikeStations}
+            displayRef={displayBluebikeStationsRef}
+            layerName={bluebikeLayerName}
+            label="BlueBike Stations"
+          />
         </div>
 
         <SideBar 
