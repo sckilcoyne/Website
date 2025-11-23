@@ -48,19 +48,19 @@ function Map() {
       // console.log(hashValue)
       if (hashValue == 'true') {hashValue = true}
       else if (hashValue == 'false') {hashValue = false}
-      else if (hashValue == '') {return}
+      else if (hashValue == 'none') {return}
 
       return hashValue
     } else {
-      if (defaultValue == '') {return}
+      if (defaultValue == 'none') {return}
       window.location.hash += "&" + hashName + "=" + defaultValue;
       return defaultValue
     }
   }
 
   // stores the feature that the user is currently viewing (triggers the modal)
-  const [activeFeature, setActiveFeature] = useState(setFromFragment('selected', ''))
-  const [activeFeatureType, setActiveFeatureType] = useState(setFromFragment('selectedType', ''))
+  const [activeFeature, setActiveFeature] = useState(setFromFragment('selected', 'none'))
+  const [activeFeatureType, setActiveFeatureType] = useState(setFromFragment('selectedType', 'none'))
 
   const [advancedMode, setAdvancedMode] = useState(false);
   // console.log('advancedMode:', advancedMode);
