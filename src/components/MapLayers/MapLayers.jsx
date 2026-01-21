@@ -31,6 +31,44 @@ function featureClick (mapRef, layerID, featureID, setActiveFeature, setActiveFe
         if(typeof mapRef.current.getLayer(layerID+'-selected') != 'undefined') {
           mapRef.current.setFilter(layerID+'-selected', ['in', 'osmid', e.features[0].id]);
         }
+
+        // Update URL hash fragment
+        const hashType = 'selectedType'
+        const updateFeatureType = hashType + "=" + featureID
+        const hashID = 'selected'
+        var updateSelectedID
+        if (featureID == 'lts'){
+          updateSelectedID = hashID + "=" + e.features[0]['id']
+          console.log('updateSelectedID lts', updateSelectedID)
+        } else if (featureID == 'intersections') {
+          updateSelectedID = hashID + "=" + e.features[0]['properties']['ID']
+          console.log('updateSelectedID intersections', updateSelectedID)
+        } else if (featureID == 'bikeParking') {
+          updateSelectedID = hashID + "=" + e.features[0]['properties']['id']
+          console.log('updateSelectedID bikeParking', updateSelectedID)
+        } else if (featureID == 'bluebikeStation') {
+          updateSelectedID = hashID + "=" + e.features[0]['properties']['station_id']
+          console.log('updateSelectedID bluebikeStation', updateSelectedID)
+        } else {
+          console.log('Unknown featureID', featureID)
+        }
+        console.log("updateFeatureType", updateFeatureType)
+        console.log("updateSelectedID", updateSelectedID)
+
+        if (window.location.hash.includes(hashID + "=")) {
+          const splitHash = window.location.hash.split('&')
+          // console.log(splitHash)
+          const filterType = splitHash.filter(str => str.includes(hashType + "="))
+          console.log("filterType", filterType[0])
+          window.location.hash = window.location.hash.replace(filterType, updateFeatureType)
+
+          const filterID = splitHash.filter(str => str.includes(hashID + "="))
+          console.log("filterID", filterID[0])
+          window.location.hash = window.location.hash.replace(filterID, updateSelectedID)
+        } else {
+          window.location.hash += "&" + updateFeatureType + "&" + updateSelectedID;
+          console.log('Adding new fragments to URL', updateFeatureType, updateSelectedID)
+        }
     });
 }
 

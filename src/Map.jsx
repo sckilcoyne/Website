@@ -37,38 +37,83 @@ function Map() {
   console.log(window.location.pathname) // just the path without the domain
   console.log(window.location.hash) // just the hash fragment of the url
 
+  const ltsLayerName = 'lts-layer'
+  const intersectionsLayerName = 'intersections-layer'
+  const bikeParkingLayerName = 'bike_parking-layer'
+  const bluebikeLayerName = 'bluebike-layer'
+
   function setFromFragment (hashName, defaultValue) {
-    // console.log('hashName', hashName)
+    console.log('setFromFragment/hashName:', hashName)
     if (window.location.hash.includes(hashName + "=")) {
-      const splitHash = window.location.hash.split('&')
+      var splitHash = window.location.hash.split('&')
       // console.log(splitHash)
-      const filterHash = splitHash.filter(str => str.includes(hashName))
-      // console.log(filterHash)
+      var filterHash = splitHash.filter(str => str.includes(hashName + '='))
+      // console.log('setFromFragment/filterHash:', filterHash)
       var hashValue = filterHash[0].split('=')[1]
-      // console.log(hashValue)
+      console.log('setFromFragment/hashValue:', hashValue)
       if (hashValue == 'true') {hashValue = true}
       else if (hashValue == 'false') {hashValue = false}
-      else if (hashValue == 'none') {return}
+      else if (hashValue == 'none') {
+        console.log('setFromFragment: Set empty state due to value of none')
+        return
+      }
 
+      // Find the feature id and select the feature
+      if (hashName == 'selected' && window.location.hash.includes('selectedType')) {
+        var selectedType = splitHash.filter(str => str.includes('selectedType'))
+        selectedType = selectedType[0].split('=')[1]
+        console.log('setFromFragment/selectedType:', selectedType)
+      } else if (hashName == 'selected') {
+        console.log('setFromFragment: URL fragment has selected feature without feature type. Set empty state.')
+        return
+      }
+
+      if (selectedType == 'bluebikeStation') {
+        console.log('-------------Looking up BlueBike station ID from map layer')
+        // console.log(mapRef.current.getLayer(bluebikeLayerName))
+        // console.log(mapRef.current)
+        // console.log(mapRef.current.setFilter(bluebikeLayerName,['==',['get', 'station_id'], hashValue]))
+        // console.log(mapRef.current.getFilter(bluebikeLayerName))
+        var layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: bluebikeLayerName}}) 
+        console.log(layerFeatures)
+        function getStationID(element) {
+          return element.properties.station_id
+        }
+        hashValue = layerFeatures.find(getStationID)
+        console.log('new hashValue', hashValue)
+      } else if (selectedType == 'bikeParking') {
+        console.log('-------------Looking up bike parking ID from map layer')
+        var layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: bikeParkingLayerName}}) 
+        console.log('bikeparking layerFeatures', layerFeatures)
+        function getOSMID(element) {
+          return element.id
+        }
+        hashValue = layerFeatures.find(getOSMID)
+        console.log('new hashValue', hashValue)
+      }
+      console.log('setFromFragment: Setting `' + hashName + '` to `' + hashValue + '`')
       return hashValue
     } else {
+      console.log('setFromFragment: Key `' + hashName + '` not in URL fragment')
       if (defaultValue == 'none') {return}
       window.location.hash += "&" + hashName + "=" + defaultValue;
       return defaultValue
     }
   }
-
-  // stores the feature that the user is currently viewing (triggers the modal)
-  const [activeFeature, setActiveFeature] = useState(setFromFragment('selected', 'none'))
-  const [activeFeatureType, setActiveFeatureType] = useState(setFromFragment('selectedType', 'none'))
-
+ 
   const [advancedMode, setAdvancedMode] = useState(false);
   // console.log('advancedMode:', advancedMode);
   
+  // Set the layers on the map from the URL fragment
   const [displayLTSState, setLTS] = useState(setFromFragment('lts', true));
   const [displayIntersectionsState, setIntersections] = useState(setFromFragment('intx', false));
   const [displayBikeParkingState, setBikeParking] = useState(setFromFragment('bikePark', false));
   const [displayBluebikeStationsState, setBluebikeStations] = useState(setFromFragment('bluebike', false));
+
+  // Create activeFeature states, 
+  // to be read from URL fragment later because it needs the map layers loaded first
+  const [activeFeatureType, setActiveFeatureType] = useState()
+  const [activeFeature, setActiveFeature] = useState()
   
   const displayLTSRef = useRef()
   const displayIntersectionsRef = useRef()
@@ -101,13 +146,7 @@ function Map() {
   displayLTS3Ref.current = displayLTS3State
   displayLTS4Ref.current = displayLTS4State
 
-  var ltsLayerName = 'lts-layer'
-  var intersectionsLayerName = 'intersections-layer'
-  var bikeParkingLayerName = 'bike_parking-layer'
-  var bluebikeLayerName = 'bluebike-layer'
-
-  const loadLayers = (ltsLayerName, bikeParkingLayerName, bluebikeLayerName, intersectionsLayerName,
-                      ) => {
+  const loadLayers = () => {
     console.log('loadLayers State', 
       displayLTSState, displayIntersectionsState, displayBikeParkingState, displayBluebikeStationsState,)
     console.log('loadLayers Ref',
@@ -130,6 +169,10 @@ function Map() {
       // layerIntersections(mapRef, intersectionsLayerName, displayIntersectionsRef, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
       layerIntersections(mapRef, intersectionsLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
     }
+    // load the active feature from the url fragment (triggers the modal)
+    // console.log('***setting activeFeature', setFromFragment('selected', 'none'))
+    setActiveFeatureType(setFromFragment('selectedType', 'none'))
+    setActiveFeature(setFromFragment('selected', 'none'))
   };
 
   const mapRef = useRef()
@@ -204,8 +247,6 @@ function Map() {
         }
       }
     });
-
-    let q = 1
 
     mapRef.current.on('load', function () {
       loadLayers(ltsLayerName, bikeParkingLayerName, bluebikeLayerName, intersectionsLayerName,)
@@ -307,12 +348,14 @@ function Map() {
       console.log("Turning on " + layerID)
       mapRef.current.setLayoutProperty(layerID, 'visibility', 'visible');
       if(typeof mapRef.current.getLayer(layerID+'selected') != 'undefined') {
-        mapRef.current.setLayoutProperty(layerID+'selected', 'visibility', 'visible');}
+        mapRef.current.setLayoutProperty(layerID+'selected', 'visibility', 'visible');
+      }
     } else {
       console.log("Turning off " + layerID)
       mapRef.current.setLayoutProperty(layerID, 'visibility', 'none');
       if(typeof mapRef.current.getLayer(layerID+'selected') != 'undefined') {
-        mapRef.current.setLayoutProperty(layerID+'selected', 'visibility', 'none');}
+        mapRef.current.setLayoutProperty(layerID+'selected', 'visibility', 'none');
+      }
     }
 
   }
