@@ -42,6 +42,19 @@ function Map() {
   const bikeParkingLayerName = 'bike_parking-layer'
   const bluebikeLayerName = 'bluebike-layer'
 
+  function updateFragment (key, value) {
+    console.log('Updating URL fragment to ', key, '=', value)
+    if (window.location.hash.includes(key + "=")) {
+      var regex = new RegExp(`(${key}=)[A-Za-z0-9_-]*`)
+      var hash = window.location.hash
+      // console.log('replaceFragment', hash, key, value, regex, hash.replace(regex, key+'='+value))
+      window.location.hash = hash.replace(regex, key + '=' + value)
+
+    } else {
+      window.location.hash += '&' + key + '=' + value
+    }
+  }
+
   function setFromFragment (hashName, defaultValue) {
     console.log('setFromFragment/hashName:', hashName)
     if (window.location.hash.includes(hashName + "=")) {
@@ -105,10 +118,10 @@ function Map() {
   // console.log('advancedMode:', advancedMode);
   
   // Set the layers on the map from the URL fragment
-  const [displayLTSState, setLTS] = useState(setFromFragment('lts', true));
-  const [displayIntersectionsState, setIntersections] = useState(setFromFragment('intx', false));
-  const [displayBikeParkingState, setBikeParking] = useState(setFromFragment('bikePark', false));
-  const [displayBluebikeStationsState, setBluebikeStations] = useState(setFromFragment('bluebike', false));
+  const [displayLTSState, setLTS] = useState(setFromFragment(ltsLayerName, true));
+  const [displayIntersectionsState, setIntersections] = useState(setFromFragment(intersectionsLayerName, false));
+  const [displayBikeParkingState, setBikeParking] = useState(setFromFragment(bikeParkingLayerName, false));
+  const [displayBluebikeStationsState, setBluebikeStations] = useState(setFromFragment(bluebikeLayerName, false));
 
   // Create activeFeature states, 
   // to be read from URL fragment later because it needs the map layers loaded first
@@ -333,6 +346,7 @@ function Map() {
     setState(checkboxState => !checkboxState)
 
     if(checkboxState) {
+      // Check if the layer has been loaded and load it if it hasn't
       if(typeof mapRef.current.getLayer(layerID) == 'undefined') {
         if (layerID == intersectionsLayerName) {
           // layerIntersections(mapRef, intersectionsLayerName, displayIntersectionsRef, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
@@ -357,6 +371,8 @@ function Map() {
         mapRef.current.setLayoutProperty(layerID+'selected', 'visibility', 'none');
       }
     }
+
+    updateFragment(layerID, checkboxState)
 
   }
 
