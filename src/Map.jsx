@@ -37,10 +37,10 @@ function Map() {
   console.log(window.location.pathname) // just the path without the domain
   console.log(window.location.hash) // just the hash fragment of the url
 
-  const ltsLayerName = 'lts-layer'
-  const intersectionsLayerName = 'intersections-layer'
-  const bikeParkingLayerName = 'bike_parking-layer'
-  const bluebikeLayerName = 'bluebike-layer'
+  const ltsLayerName = 'lts'
+  const intersectionsLayerName = 'inx'
+  const bikeParkingLayerName = 'bpk'
+  const bluebikeLayerName = 'blb'
 
   function updateFragment (key, value) {
     console.log('Updating URL fragment to ', key, '=', value)
@@ -200,24 +200,29 @@ function Map() {
   }
   
   const handleLTS1 = () => {
-    console.log('displayLTS1 switched from', displayLTS1Ref.current);
+    console.log('displayLTS1 switched from', displayLTS1Ref.current);    
+    
     setLTS1(displayLTS1 => !displayLTS1);
     setLTSfilter(1)
+    updateFragment('lts1', !displayLTS1Ref.current)
   }
   const handleLTS2 = () => {
     console.log('displayLTS2 switched from', displayLTS2Ref.current);
     setLTS2(displayLTS2 => !displayLTS2);
     setLTSfilter(2)
+    updateFragment('lts2', !displayLTS2Ref.current)
   }
   const handleLTS3 = () => {
     console.log('displayLTS3 switched from', displayLTS3Ref.current);
     setLTS3(displayLTS3 => !displayLTS3);
     setLTSfilter(3)
+    updateFragment('lts3', !displayLTS3Ref.current)
   }
   const handleLTS4 = () => {
     console.log('displayLTS4 switched from', displayLTS4Ref.current);
     setLTS4(displayLTS4 => !displayLTS4);
     setLTSfilter(4)
+    updateFragment('lts4', !displayLTS4Ref.current)
   }
   const setLTSfilter = (level) => {
     let ltsFilter = mapRef.current.getFilter(ltsLayerName)
