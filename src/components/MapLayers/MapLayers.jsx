@@ -201,12 +201,13 @@ export function layerIntersections (mapRef,
     }
 })}
 
-export function layerBikeParking (mapRef,
+export async function layerBikeParking (mapRef,
                                   bikeParkingLayerName,
                                   COLOR_SCALE,
                                   setActiveFeature, setActiveFeatureType
                                 ) {
-  Overpass(mapRef).then((bike_parking_json) => {
+  Overpass().then((bike_parking_json) => {
+    console.log('bike_parking_json loaded')
     if (typeof mapRef.current.getSource('bike-parking') == 'undefined'){
       mapRef.current.addSource('bike-parking', {
               type: 'geojson',
@@ -233,7 +234,7 @@ export function layerBikeParking (mapRef,
     featureClick(mapRef, bikeParkingLayerName, 'bikeParking', setActiveFeature, setActiveFeatureType)
 })}
 
-export function layerBlueBikes (mapRef, 
+export async function layerBlueBikes (mapRef, 
                                 bluebikeLayerName,
                                 setActiveFeature, setActiveFeatureType
                               ) {

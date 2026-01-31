@@ -83,12 +83,8 @@ function Map() {
 
       if (selectedType == 'bluebikeStation') {
         console.log('-------------Looking up BlueBike station ID from map layer')
-        // console.log(mapRef.current.getLayer(bluebikeLayerName))
-        // console.log(mapRef.current)
-        // console.log(mapRef.current.setFilter(bluebikeLayerName,['==',['get', 'station_id'], hashValue]))
-        // console.log(mapRef.current.getFilter(bluebikeLayerName))
         var layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: bluebikeLayerName}}) 
-        console.log(layerFeatures)
+        console.log('bluebikeStation layerFeatures', layerFeatures)
         function getStationID(element) {
           return element.properties.station_id
         }
@@ -97,7 +93,7 @@ function Map() {
       } else if (selectedType == 'bikeParking') {
         console.log('-------------Looking up bike parking ID from map layer')
         var layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: bikeParkingLayerName}}) 
-        console.log('bikeparking layerFeatures', layerFeatures)
+        console.log('bikeParking layerFeatures', layerFeatures, mapRef.current.getSource('bike-parking'))
         function getOSMID(element) {
           return element.id
         }
@@ -172,7 +168,7 @@ function Map() {
       if (!displayLTS4Ref.current) { setLTSfilter(4) }
     }
     if (displayBikeParkingRef.current == true) {
-      layerBikeParking(mapRef, bikeParkingLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
+      layerBikeParking(mapRef, bikeParkingLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType).then(console.log('bike parking layer loaded'))
     }
     if (displayBluebikeStationsRef.current == true) {
       console.log('displayBluebikeStationsRef is on')
