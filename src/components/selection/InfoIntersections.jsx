@@ -1,9 +1,9 @@
-import { Link } from 'react-router-dom';
+// import { Link } from 'react-router-dom';
 
 console.log('InfoIntersections loaded')
 
 function formatDetails (name, value) {
-    console.log(name, value)
+    console.log('InfoIntersections/formatDetails', name, value)
     let icon // https://dreamyguy.github.io/react-emojis/
     let text
     if (value == 'Yes') {
@@ -54,11 +54,14 @@ const InfoIntersections = ({selectedFeature}) => {
             {ProtectedBikeLanes && <p>{formatDetails('Bike Lanes Separated', ProtectedBikeLanes)}</p>}
             {ProtectedCorners && <p>{formatDetails('Corners Protected', ProtectedCorners)}</p>}
             {DaylitCrosswalks && <p>{formatDetails('Crosswalks Daylit', DaylitCrosswalks)}</p>}
-            {projectName && <p>Project: <Link to={projectLink}>{projectName}</Link></p>}
+            {/* {projectName && <p>Project: <Link to={projectLink}>{projectName}</Link></p>} */}
+            {projectName && <p>Project: <a href={projectLink}>{projectName}</a></p>}
             {notes && <p>{notes}</p>}
-            <p><Link to={streetviewLink}>Google Streetview</Link></p>
+            {/* <p><Link to={streetviewLink}>Google Streetview</Link></p> */}
+            <p><a href={streetviewLink}>Google Streetview</a></p>
             <p>Audit Last Updated: {lastUpdated}</p>
-            <p><Link to=''>Let us know if something looks wrong</Link></p>
+            {/* <p><Link to=''>Let us know if something looks wrong</Link></p> */}
+            <p><a href=''>Let us know if something looks wrong</a></p>
         </div>
     )
 }

@@ -56,14 +56,14 @@ function Map() {
   }
 
   function setFromFragment (hashName, defaultValue) {
-    console.log('setFromFragment/hashName:', hashName)
+    // console.log('setFromFragment/hashName:', hashName)
     if (window.location.hash.includes(hashName + "=")) {
       var splitHash = window.location.hash.split('&')
       // console.log(splitHash)
       var filterHash = splitHash.filter(str => str.includes(hashName + '='))
       // console.log('setFromFragment/filterHash:', filterHash)
       var hashValue = filterHash[0].split('=')[1]
-      console.log('setFromFragment/hashValue:', hashValue)
+      // console.log('setFromFragment/hashValue:', hashValue)
       if (hashValue == 'true') {hashValue = true}
       else if (hashValue == 'false') {hashValue = false}
       else if (hashValue == 'none') {
@@ -81,10 +81,11 @@ function Map() {
         return
       }
 
+      var layerFeatures
       if (selectedType == 'bluebikeStation') {
         console.log('-------------Looking up BlueBike station ID from map layer')
-        var layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: bluebikeLayerName}}) 
-        console.log('bluebikeStation layerFeatures', layerFeatures)
+        layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: bluebikeLayerName}}) 
+        console.log('bluebikeStation layerFeatures', layerFeatures, mapRef.current.getStyle())
         function getStationID(element) {
           return element.properties.station_id
         }
@@ -92,15 +93,59 @@ function Map() {
         console.log('new hashValue', hashValue)
       } else if (selectedType == 'bikeParking') {
         console.log('-------------Looking up bike parking ID from map layer')
-        var layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: bikeParkingLayerName}}) 
-        console.log('bikeParking layerFeatures', layerFeatures, mapRef.current.getSource('bike-parking'))
+
+        // FIXME: this probably should be an async/await, but that changes how setFromFragment works 
+        // elsewhere, plus I was having a hell of a time getting async to work to wait for the OSM 
+        // data to load before trying to read and load the selection
+        let loopCount = 0
+        while (typeof mapRef.current.getLayer(bikeParkingLayerName) == 'undefined') { 
+          setTimeout(() => {
+              console.log('bike parking while loop', loopCount, mapRef.current.getLayer(bikeParkingLayerName));
+          }, 100)
+          loopCount++
+        }
+        console.log('ended bike parking while loop', mapRef.current.getLayer(bikeParkingLayerName))
+
+        layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: bikeParkingLayerName}}) 
+        // console.log('bikeParking layerFeatures', 
+        //             layerFeatures, 
+        //             // mapRef.current.getLayer(bikeParkingLayerName),
+        //             // mapRef.current.getSource('bike-parking'), 
+        //             // mapRef.current.getStyle(),
+        //             // mapRef.current.getSource('bike-parking')
+        //           )
         function getOSMID(element) {
-          return element.id
+          return element.properties.id
         }
         hashValue = layerFeatures.find(getOSMID)
         console.log('new hashValue', hashValue)
+      } else if (selectedType == 'intersections') {
+        console.log('-------------Looking up Intersection ID from map layer')
+
+        // FIXME: this probably should be an async/await, but that changes how setFromFragment works 
+        // elsewhere, plus I was having a hell of a time getting async to work to wait for the OSM 
+        // data to load before trying to read and load the selection
+        let loopCount = 0
+        while (typeof mapRef.current.getLayer(intersectionsLayerName) == 'undefined') { 
+          setTimeout(() => {
+              console.log('intersection while loop', loopCount, mapRef.current.getLayer(intersectionsLayerName));
+          }, 100)
+          loopCount++
+        }
+        console.log('ended intersection while loop', mapRef.current.getLayer(intersectionsLayerName))
+        
+        layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: intersectionsLayerName}}) 
+        console.log('intersections layerFeatures', layerFeatures, mapRef.current.getStyle())
+        function getIntersectionID(element) {
+          return element.properties.id
+        }
+        hashValue = layerFeatures.find(getIntersectionID)
+        console.log('new hashValue', hashValue)
+      // } else {
+      //   console.log('Unknown selectedType', selectedType)
+      //   hashValue = defaultValue
       }
-      console.log('setFromFragment: Setting `' + hashName + '` to `' + hashValue + '`')
+      // console.log('setFromFragment: Setting `' + hashName + '` to `' + hashValue + '`')
       return hashValue
     } else {
       console.log('setFromFragment: Key `' + hashName + '` not in URL fragment')
@@ -155,11 +200,11 @@ function Map() {
   displayLTS3Ref.current = displayLTS3State
   displayLTS4Ref.current = displayLTS4State
 
-  const loadLayers = () => {
-    console.log('loadLayers State', 
-      displayLTSState, displayIntersectionsState, displayBikeParkingState, displayBluebikeStationsState,)
-    console.log('loadLayers Ref',
-      displayLTSRef.current, displayIntersectionsRef.current, displayBikeParkingRef.current, displayBluebikeStationsRef.current)
+  async function loadLayers () {
+    // console.log('loadLayers State', 
+    //   displayLTSState, displayIntersectionsState, displayBikeParkingState, displayBluebikeStationsState,)
+    // console.log('loadLayers Ref',
+    //   displayLTSRef.current, displayIntersectionsRef.current, displayBikeParkingRef.current, displayBluebikeStationsRef.current)
     if (displayLTSRef.current == true) {
       layerLTS(mapRef, ltsLayerName, COLOR_SCALE, LINE_WIDTH, setActiveFeature, setActiveFeatureType)
       if (!displayLTS1Ref.current) { setLTSfilter(1) }
@@ -263,7 +308,13 @@ function Map() {
     });
 
     mapRef.current.on('load', function () {
-      loadLayers(ltsLayerName, bikeParkingLayerName, bluebikeLayerName, intersectionsLayerName,)
+      loadLayers(ltsLayerName, bikeParkingLayerName, bluebikeLayerName, intersectionsLayerName,).then(() => {
+        // load the active feature from the url fragment (triggers the modal)
+        // console.log('***setting activeFeature', setFromFragment('selected', 'none'))
+        setActiveFeatureType(setFromFragment('selectedType', 'none'))
+        setActiveFeature(setFromFragment('selected', 'none'))
+      }
+      )
       
       // get the current center coordinates and zoom level from the map
       mapRef.current.on('move', () => {
@@ -378,7 +429,7 @@ function Map() {
   }
 
   function OptionsMenu({checkboxName, setLayer, displayRef, layerName, label}) {
-      console.log(label, 'optionsMenu: ', displayRef.current)
+      // console.log(label, 'optionsMenu: ', displayRef.current)
       if (displayRef.current == 'hidden') {
         return null;
       }

@@ -1,6 +1,7 @@
 import Overpass from '../Overpass/overpass';
 import Bluebikes from '../GBFS/GBFS';
 import Intersections from '../Intersections/Intersections';
+import blueb_classic from '/bluebike_classic.png'
 
 function hoverMousePointer (mapRef, layerID) {
     // Change the cursor to a pointer when the mouse is over the LTS layer.
@@ -15,11 +16,12 @@ function hoverMousePointer (mapRef, layerID) {
 }
 
 function featureClick (mapRef, layerID, featureID, setActiveFeature, setActiveFeatureType) {
-    // When a click event occurs on a feature in the places layer, open a popup at the
-    // location of the feature, with description HTML from its properties.
     mapRef.current.on('click', layerID, (e) => {
         console.log('MapLayers/click/e.features[0]', e.features[0])
         console.log('MapLayers/click/e.features[0].geometry.coordinates', e.features[0].geometry.coordinates)
+
+        console.log('MapLayers/click/setActiveFeature', setActiveFeature)
+        console.log('MapLayers/click/setActiveFeatureType', setActiveFeatureType)
 
         setActiveFeature(e.features[0])
         setActiveFeatureType(featureID)
@@ -28,6 +30,44 @@ function featureClick (mapRef, layerID, featureID, setActiveFeature, setActiveFe
         // Update the filter on highlighting the selected object
         if(typeof mapRef.current.getLayer(layerID+'-selected') != 'undefined') {
           mapRef.current.setFilter(layerID+'-selected', ['in', 'osmid', e.features[0].id]);
+        }
+
+        // Update URL hash fragment
+        const hashType = 'selectedType'
+        const updateFeatureType = hashType + "=" + featureID
+        const hashID = 'selected'
+        var updateSelectedID
+        if (featureID == 'lts'){
+          updateSelectedID = hashID + "=" + e.features[0]['id']
+          console.log('updateSelectedID lts', updateSelectedID)
+        } else if (featureID == 'intersections') {
+          updateSelectedID = hashID + "=" + e.features[0]['properties']['ID']
+          console.log('updateSelectedID intersections', updateSelectedID)
+        } else if (featureID == 'bikeParking') {
+          updateSelectedID = hashID + "=" + e.features[0]['properties']['id']
+          console.log('updateSelectedID bikeParking', updateSelectedID)
+        } else if (featureID == 'bluebikeStation') {
+          updateSelectedID = hashID + "=" + e.features[0]['properties']['station_id']
+          console.log('updateSelectedID bluebikeStation', updateSelectedID)
+        } else {
+          console.log('Unknown featureID', featureID)
+        }
+        console.log("updateFeatureType", updateFeatureType)
+        console.log("updateSelectedID", updateSelectedID)
+
+        if (window.location.hash.includes(hashID + "=")) {
+          const splitHash = window.location.hash.split('&')
+          // console.log(splitHash)
+          const filterType = splitHash.filter(str => str.includes(hashType + "="))
+          console.log("filterType", filterType[0])
+          window.location.hash = window.location.hash.replace(filterType, updateFeatureType)
+
+          const filterID = splitHash.filter(str => str.includes(hashID + "="))
+          console.log("filterID", filterID[0])
+          window.location.hash = window.location.hash.replace(filterID, updateSelectedID)
+        } else {
+          window.location.hash += "&" + updateFeatureType + "&" + updateSelectedID;
+          console.log('Adding new fragments to URL', updateFeatureType, updateSelectedID)
         }
     });
 }
@@ -110,9 +150,10 @@ export function layerLTS (  mapRef, ltsLayerName,
 
 }
 
-export function layerIntersections (mapRef, 
-                                    intersectionsLayerName, displayIntersections,
-                                    COLOR_SCALE, 
+export function layerIntersections (mapRef,
+                                    // intersectionsLayerName, displayIntersections,
+                                    intersectionsLayerName,
+                                    COLOR_SCALE,
                                     setActiveFeature, setActiveFeatureType
                                   ) {
   Intersections(mapRef).then((intersections_json) => {
@@ -160,11 +201,13 @@ export function layerIntersections (mapRef,
     }
 })}
 
-export function layerBikeParking (mapRef, 
-                                  bikeParkingLayerName,                                   COLOR_SCALE,
+export async function layerBikeParking (mapRef,
+                                  bikeParkingLayerName,
+                                  COLOR_SCALE,
                                   setActiveFeature, setActiveFeatureType
                                 ) {
-  Overpass(mapRef).then((bike_parking_json) => {
+  Overpass().then((bike_parking_json) => {
+    console.log('bike_parking_json loaded')
     if (typeof mapRef.current.getSource('bike-parking') == 'undefined'){
       mapRef.current.addSource('bike-parking', {
               type: 'geojson',
@@ -191,17 +234,18 @@ export function layerBikeParking (mapRef,
     featureClick(mapRef, bikeParkingLayerName, 'bikeParking', setActiveFeature, setActiveFeatureType)
 })}
 
-export function layerBlueBikes (mapRef, 
+export async function layerBlueBikes (mapRef, 
                                 bluebikeLayerName,
                                 setActiveFeature, setActiveFeatureType
                               ) {
   Bluebikes().then((bluebikeStationsGeojson) => {
     // console.log('bluebikeStationsGeojson', bluebikeStationsGeojson)
     console.log('bluebikeStationsGeojson loaded')
-    mapRef.current.loadImage('/bluebike_classic.png', (error, image) => {
+    mapRef.current.loadImage(blueb_classic, (error, image) => {
       if (error) throw error;
       // Add the loaded image to the style's sprite.
-      mapRef.current.addImage('bluebike_classic_img', image);
+      if (!mapRef.current.hasImage('bluebike_classic_img')) {
+        mapRef.current.addImage('bluebike_classic_img', image);}
 
       if (typeof mapRef.current.getSource('bluebike-stations') == 'undefined'){
         mapRef.current.addSource('bluebike-stations', {
