@@ -223,6 +223,10 @@ function Map() {
       // layerIntersections(mapRef, intersectionsLayerName, displayIntersectionsRef, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
       layerIntersections(mapRef, intersectionsLayerName, COLOR_SCALE, setActiveFeature, setActiveFeatureType)
     }
+    // load the active feature from the url fragment (triggers the modal)
+    // console.log('***setting activeFeature', setFromFragment('selected', 'none'))
+    setActiveFeatureType(setFromFragment('selectedType', 'none'))
+    setActiveFeature(setFromFragment('selected', 'none'))
   };
 
   const mapRef = useRef()

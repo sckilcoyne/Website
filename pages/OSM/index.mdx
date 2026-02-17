@@ -1,0 +1,59 @@
+import Link from 'next/link'
+import Map from '../../src/components/Map.jsx'
+import MDX_layout from '../../components/MDX_layout.jsx'
+
+# What is OpenStreetMaps?
+
+OpenStreetMap (OSM) is the data source for the calculations used to rate each street segment on our Stress Map. OSM is an incredible resource, much like Wikipedia, that is volunteer-edited to add details and keep the map current to changes (e.g. new bike lanes being installed). By editing the map directly, you will make the Stress Map more accurate, and you will improve the baseline data used in most of your favorite bike and navigation apps, including BlueBikes, Strava, RideWithGPS, GeoVelo, Pointz, and many more.
+# Want to help improve our map?
+
+If you are interested in the type of projects we are working on, join us at BCU Labs! Any and all levels of experience are welcomed. We are always looking for new volunteers that are interested in data-backed analysis and storytelling.
+
+If you see a data accuracy issue and want the BCU Labs to investigate and fix it, you can use this form to let us know.
+# Recommended Map Editing Tools
+
+These are some of the tools that the BCU Labs team has experience with to edit OpenStreetMap. Each of these tools has different strengths for different types of editing and you may find value using multiple of them.
+
+    - OpenStreetMap.org
+
+    - StreetComplete (Android only, beginner friendly)
+
+    - MapComplete
+
+    - OverpassTurbo
+
+    - JOSM
+
+    - Vespucci (Android only)
+
+# Tags we use
+
+OSM data is organized as ways (street segments) that have attributes attached to them called tags. These tags contain a key and a value. This is the data that we are able to use to calculate the Level of Traffic Stress (LTS) of each street segment. You can see exactly what tags we use here and a general overview of which tags are most important for our calculations below.
+
+Some of the tags are on nearly every segment while others are more rare. For many segments, a tag is missing that we need to be able to calculate the LTS. In these cases we make assumptions based on the other tags. Adding the proper tags when our assumptions are wrong will result in a more accurate calculation.
+
+    - highway: Describes the type of road
+
+    - cycleway: Describes the type of bike lane. Sub-tags add details about bike lane, including width and separation
+
+    - footway: Type of pedestrian path. May have complementing tags to allow bikes
+
+    - parking: Is there street parking?
+
+    - width: Width of the roadway
+
+    - oneway: Is the street a oneway?
+
+    - bicycle: Are bicycles allowed on the way?
+
+    - access: Is the public allowed here?
+
+    - service: Alleys and driveways
+
+    - lane_markings: Are lane lines painted? Used to estimate daily car traffic
+
+    - lanes: Number of lanes
+
+
+
+export default ({ children }) => <MDX_layout children={children} />;

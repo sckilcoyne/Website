@@ -2,9 +2,18 @@
 Download and install node.js from [here](https://nodejs.org/en/download/prebuilt-installer).  
 Install Vite using `npm install -D vite`
 
+## WIP - Setting up with Next.js
+`npm install` to install dependences
+
+## Notes on getting settings right
+https://superflux.dev/blog/github-pages-using-nextjs
+    Helped with getting styles and js working
+
 # How to run website locally
 `npm run dev`  
 In browser go to `http://localhost:5173/` to see website
+## WIP - Next.js
+`http://localhost:3000/`
 
 # Notes from Creation Process
 Used [Mapbox React tutuorial](https://docs.mapbox.com/help/tutorials/use-mapbox-gl-js-with-react/) to start.  

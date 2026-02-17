@@ -1,0 +1,47 @@
+import Link from 'next/link'
+import Map from '../src/components/Map.jsx'
+import MDX_layout from '../components/MDX_layout.jsx'
+import ProjectButton from '../src/components/Buttons/ProjectButton.jsx'
+
+
+# Welcome to BCU Labs!
+## Experiments in data-backed advocacy
+We are a volunteer-driven group within Boston Cyclists Union. You can join BCU Labs here.
+
+# Our Mission
+
+BCU Labs seeks to draw insight and tell stories from the wealth of biking data in Boston. Our mission is to leverage the power of data through creative experimentation, learn where Boston can improve its infrastructure, whether physical or digital, and continue to empower BCU’s advocacy one pedal at a time. Through our framework of mobility justice and equity, we strive to push for positive change in our bike networks, neighborhoods, and mindsets for everybody, no matter who you are or where you ride.
+
+# Our Projects and Writing
+<ProjectButton 
+    link="/Map"
+    title='Boston Bike Network Map'
+    subtitle="Explore our projects together"
+    />
+<ProjectButton 
+    link="https://landway.bostoncyclistsunion.org/"
+    title='Landway Map'
+    subtitle="Mobility Network Vision"
+    />
+<ProjectButton 
+    link='/Map'
+    title='Bike Stress Map'
+    subtitle="See how stressful Boston's streets are"
+    />
+<ProjectButton 
+    link='/Intersections'
+    title='Forgotten Intersections'
+    subtitle="Where are there gaps in bike lanes at intersections"
+    />
+<ProjectButton 
+    link='/BikeParking'
+    title='Bike Parking'
+    subtitle="Where can you park your bike?"
+    />
+<ProjectButton 
+    link="https://bostoncyclistsunion.org/author/bcu-labs"
+    title='Articles'
+    subtitle="Data analysis, stories, infrastructure projects, and more"
+    />
+
+export default ({ children }) => <MDX_layout children={children} />;
