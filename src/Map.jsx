@@ -100,11 +100,12 @@ function Map() {
         let loopCount = 0
         while (typeof mapRef.current.getLayer(bikeParkingLayerName) == 'undefined') { 
           setTimeout(() => {
-              console.log('while loop', loopCount, mapRef.current.getLayer(bikeParkingLayerName));
+              console.log('bike parking while loop', loopCount, mapRef.current.getLayer(bikeParkingLayerName));
           }, 100)
           loopCount++
         }
-        console.log('ended while loop', mapRef.current.getLayer(bikeParkingLayerName))
+        console.log('ended bike parking while loop', mapRef.current.getLayer(bikeParkingLayerName))
+
         layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: bikeParkingLayerName}}) 
         // console.log('bikeParking layerFeatures', 
         //             layerFeatures, 
@@ -118,6 +119,31 @@ function Map() {
         }
         hashValue = layerFeatures.find(getOSMID)
         console.log('new hashValue', hashValue)
+      } else if (selectedType == 'intersections') {
+        console.log('-------------Looking up Intersection ID from map layer')
+
+        // FIXME: this probably should be an async/await, but that changes how setFromFragment works 
+        // elsewhere, plus I was having a hell of a time getting async to work to wait for the OSM 
+        // data to load before trying to read and load the selection
+        let loopCount = 0
+        while (typeof mapRef.current.getLayer(intersectionsLayerName) == 'undefined') { 
+          setTimeout(() => {
+              console.log('intersection while loop', loopCount, mapRef.current.getLayer(intersectionsLayerName));
+          }, 100)
+          loopCount++
+        }
+        console.log('ended intersection while loop', mapRef.current.getLayer(intersectionsLayerName))
+        
+        layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: intersectionsLayerName}}) 
+        console.log('intersections layerFeatures', layerFeatures, mapRef.current.getStyle())
+        function getIntersectionID(element) {
+          return element.properties.id
+        }
+        hashValue = layerFeatures.find(getIntersectionID)
+        console.log('new hashValue', hashValue)
+      // } else {
+      //   console.log('Unknown selectedType', selectedType)
+      //   hashValue = defaultValue
       }
       // console.log('setFromFragment: Setting `' + hashName + '` to `' + hashValue + '`')
       return hashValue
