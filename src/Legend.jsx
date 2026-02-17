@@ -40,46 +40,46 @@ const Legend = ({
       {/* LTS Legend, display only when LTS is shown */}
       {lts_display && <div>
         <div className="legend-header-hover">
-          <img src={logo_stressmap.src} alt='Legend' className='hover-image'/>
+          <img src={logo_stressmap} alt='Legend' className='hover-image'/>
         </div>
         
         <button className='legend-row' style={lts1_display ? style_lts1 : style_off} onClick={handleLTS1}>
           <div className="legend-icon">
-            <img src={icon_lts1.src} alt='LTS 1' className='default-image'/>
-            <img src={icon_lts1.src} alt='LTS 1' className='hover-image'/>
+            <img src={icon_lts1} alt='LTS 1' className='default-image'/>
+            <img src={icon_lts1} alt='LTS 1' className='hover-image'/>
           </div>
           <div className="legend-text">
-            <img src={text_lts1.src} alt='Carefree riding' className='hover-image'/>
+            <img src={text_lts1} alt='Carefree riding' className='hover-image'/>
           </div>
         </button>
 
         <button className='legend-row' style={lts2_display ? style_lts2 : style_off} onClick={handleLTS2}>
           <div className="legend-icon">
-            <img src={icon_lts2.src} alt='LTS 2' className='default-image'/>
-            <img src={icon_lts2.src} alt='LTS 2' className='hover-image'/>
+            <img src={icon_lts2} alt='LTS 2' className='default-image'/>
+            <img src={icon_lts2} alt='LTS 2' className='hover-image'/>
           </div>
           <div className="legend-text">
-            <img src={text_lts2.src} alt='Easy going riding' className='hover-image'/>
+            <img src={text_lts2} alt='Easy going riding' className='hover-image'/>
           </div>
         </button>
 
         <button className='legend-row' style={lts3_display ? style_lts3 : style_off} onClick={handleLTS3}>
           <div className="legend-icon">
-            <img src={icon_lts3.src} alt='LTS 3' className='default-image'/>
-            <img src={icon_lts3.src} alt='LTS 3' className='hover-image'/>
+            <img src={icon_lts3} alt='LTS 3' className='default-image'/>
+            <img src={icon_lts3} alt='LTS 3' className='hover-image'/>
           </div>
           <div className="legend-text">
-            <img src={text_lts3.src} alt='Stressful riding' className='hover-image'/>
+            <img src={text_lts3} alt='Stressful riding' className='hover-image'/>
           </div>
         </button>
 
         <button className='legend-row' style={lts4_display ? style_lts4 : style_off} onClick={handleLTS4}>
           <div className="legend-icon">
-            <img src={icon_lts4.src} alt='LTS 4' className='default-image'/>
-            <img src={icon_lts4.src} alt='LTS 4' className='hover-image'/>
+            <img src={icon_lts4} alt='LTS 4' className='default-image'/>
+            <img src={icon_lts4} alt='LTS 4' className='hover-image'/>
           </div>
           <div className="legend-text">
-            <img src={text_lts4.src} alt='White knuckle riding' className='hover-image'/>
+            <img src={text_lts4} alt='White knuckle riding' className='hover-image'/>
           </div>
         </button>
     </div>}
