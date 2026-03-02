@@ -35,6 +35,8 @@ const Legend = ({
     const style_lts4 = {borderColor: colorScale[3]}
     const style_off = {borderColor: 'white'}
     
+    if (lts_display != true) {lts_display = false}
+    
     return(
     <div className="legend grid-container">
       {/* LTS Legend, display only when LTS is shown */}

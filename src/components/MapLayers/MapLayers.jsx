@@ -1,7 +1,8 @@
-import Overpass from '../Overpass/overpass';
+// import Overpass from '../Overpass/overpass';
 import Bluebikes from '../GBFS/GBFS';
 import Intersections from '../Intersections/Intersections';
 import blueb_classic from '/bluebike_classic.png'
+import DownloadGeojson from '../DownloadGeojson/DownloadGeojson';
 
 function hoverMousePointer (mapRef, layerID) {
     // Change the cursor to a pointer when the mouse is over the LTS layer.
@@ -206,7 +207,8 @@ export async function layerBikeParking (mapRef,
                                   COLOR_SCALE,
                                   setActiveFeature, setActiveFeatureType
                                 ) {
-  Overpass().then((bike_parking_json) => {
+  // Overpass().then((bike_parking_json) => {
+  DownloadGeojson('https://raw.githubusercontent.com/BostonCyclistsUnion/osm-bikeparking/refs/heads/main/data.geojson').then((bike_parking_json) => {
     console.log('bike_parking_json loaded')
     if (typeof mapRef.current.getSource('bike-parking') == 'undefined'){
       mapRef.current.addSource('bike-parking', {

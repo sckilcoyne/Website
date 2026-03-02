@@ -8,10 +8,12 @@ const InfoBikeParking = ({selectedFeature}) => {
       bicycle_parking,
       capacity,
       covered,
-      id,
+    //   id,
       indoor,
       access
     } = selectedFeature.properties
+
+    const id = selectedFeature.properties['@id'] // Changed when moved to github running overpass query https://github.com/watmildon/microcosm
 
     const osmidurl = "https://www.openstreetmap.org/" + id.toString()
 

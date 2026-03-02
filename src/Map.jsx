@@ -21,11 +21,11 @@ import {
 const INITIAL_CENTER = [-71.0809, 42.3473]
 const INITIAL_ZOOM = 12
 const MAX_ZOOM = 20
-const MIN_ZOOM = 11
+const MIN_ZOOM = 9
 const ZOOM_UNION = 12
 const BOUNDS = [
-  [-71.2000, 42.1800], // Southwest coordinates
-  [-70.9000, 42.4600] // Northeast coordinates
+  [-71.3000, 42.1500], // Southwest coordinates
+  [-70.9000, 42.5000]  // Northeast coordinates
 ];
 const LINE_WIDTH = 4
 
@@ -97,14 +97,16 @@ function Map() {
         // FIXME: this probably should be an async/await, but that changes how setFromFragment works 
         // elsewhere, plus I was having a hell of a time getting async to work to wait for the OSM 
         // data to load before trying to read and load the selection
-        let loopCount = 0
-        while (typeof mapRef.current.getLayer(bikeParkingLayerName) == 'undefined') { 
-          setTimeout(() => {
-              console.log('bike parking while loop', loopCount, mapRef.current.getLayer(bikeParkingLayerName));
-          }, 100)
-          loopCount++
-        }
-        console.log('ended bike parking while loop', mapRef.current.getLayer(bikeParkingLayerName))
+        // let loopCount = 0
+        // while (loopCount < 10) { 
+        //   if (typeof mapRef.current.getLayer(bikeParkingLayerName) == 'undefined') {
+        //     setTimeout(() => {
+        //         console.log('bike parking while loop', loopCount, mapRef.current.getLayer(bikeParkingLayerName));
+        //     }, 100)
+        //     loopCount++
+        //   }
+        // }
+        // console.log('ended bike parking while loop', mapRef.current.getLayer(bikeParkingLayerName))
 
         layerFeatures = mapRef.current.queryRenderedFeatures({target: {layerId: bikeParkingLayerName}}) 
         // console.log('bikeParking layerFeatures', 
@@ -126,11 +128,18 @@ function Map() {
         // elsewhere, plus I was having a hell of a time getting async to work to wait for the OSM 
         // data to load before trying to read and load the selection
         let loopCount = 0
-        while (typeof mapRef.current.getLayer(intersectionsLayerName) == 'undefined') { 
-          setTimeout(() => {
-              console.log('intersection while loop', loopCount, mapRef.current.getLayer(intersectionsLayerName));
-          }, 100)
-          loopCount++
+        while (loopCount < 10) { 
+          if (typeof mapRef.current.getLayer(intersectionsLayerName) == 'undefined') {
+            setTimeout(() => {
+                console.log(
+                  'intersection while loop', 
+                  typeof mapRef.current.getLayer(intersectionsLayerName), 
+                  loopCount, 
+                  mapRef.current.getLayer(intersectionsLayerName)
+                );
+            }, 100)
+            loopCount++
+          }
         }
         console.log('ended intersection while loop', mapRef.current.getLayer(intersectionsLayerName))
         
